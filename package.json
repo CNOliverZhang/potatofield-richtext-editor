@@ -1,0 +1,61 @@
+{
+  "name": "potatofield",
+  "productName": "洋芋田",
+  "private": true,
+  "version": "1.0.0",
+  "description": "洋芋田",
+  "author": "张志毅",
+  "license": "MIT",
+  "main": "dist/main/index.cjs",
+  "scripts": {
+    "dev": "node scripts/watch.mjs",
+    "build": "tsc --noEmit -p packages/renderer/tsconfig.json && node scripts/build.mjs && electron-builder"
+  },
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@fortawesome/react-fontawesome": "^0.1.18",
+    "@mui/icons-material": "^5.6.0",
+    "@mui/material": "^5.6.0",
+    "electron-store": "^8.0.1",
+    "electron-updater": "^5.0.1",
+    "jss": "^10.9.0",
+    "react": "^17.0.2",
+    "react-jss": "^10.9.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
+    "vditor": "^3.8.13"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.40",
+    "@types/react-dom": "^17.0.13",
+    "@types/react-router-config": "^5.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "@vitejs/plugin-react": "^1.2.0",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13",
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "execa": "^6.1.0",
+    "prettier": "^2.6.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.6.2",
+    "vite": "^2.8.6",
+    "vite-plugin-esmodule": "^1.2.5",
+    "vite-plugin-optimizer": "^1.3.2"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 7777
+  }
+}

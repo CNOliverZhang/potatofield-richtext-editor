@@ -1,0 +1,15 @@
+{
+  "extends": "./paths.json",
+  "exclude": ["node_mudoles", "dist"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "strict": true,
+    "jsx": "react-jsx"
+  }
+}
