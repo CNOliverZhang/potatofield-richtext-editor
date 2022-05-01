@@ -1,5 +1,3 @@
-# potatofield-electron-react-template
+# 洋芋田富文本编辑器
 
-洋芋田 Electron React App 模板
-
-![洋芋田](https://potatofield.cn)
+[洋芋田](https://potatofield.cn)

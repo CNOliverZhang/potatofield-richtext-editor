@@ -1,6 +1,6 @@
 {
-  "appId": "cn.potatofield.appname",
-  "productName": "洋芋田",
+  "appId": "cn.potatofield.richtexteditor",
+  "productName": "洋芋田富文本编辑器",
   "copyright": "Copyright © 2022 ${author}",
   "asar": true,
   "directories": {
@@ -17,7 +17,7 @@
         ]
       }
     ],
-    "artifactName": "potatofield-appname-${version}.${ext}"
+    "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "nsis": {
     "oneClick": false,
@@ -26,19 +26,19 @@
   },
   "mac": {
     "target": ["dmg"],
-    "artifactName": "potatofield-appname-${version}.${ext}"
+    "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "linux": {
     "target": ["AppImage"],
-    "artifactName": "potatofield-appname-${version}.${ext}"
+    "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "更新日志"
+    "releaseNotes": "首个正式发布版本。"
   },
   "publish": [
     {
       "provider": "generic",
-      "url": "https://files.potatofield.cn/"
+      "url": "https://files.potatofield.cn/RichTextEditor/Packages"
     }
   ]
 }

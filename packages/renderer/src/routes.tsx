@@ -1,11 +1,16 @@
 import React from 'react';
 
-import Index from '@/pages';
+import Home from '@/pages/home';
+import Settings from '@/pages/settings';
 
 const rootRoute = [
   {
     path: '/',
-    element: <Index />,
+    element: <Home />,
+  },
+  {
+    path: '/settings',
+    element: <Settings />,
   },
 ];
 

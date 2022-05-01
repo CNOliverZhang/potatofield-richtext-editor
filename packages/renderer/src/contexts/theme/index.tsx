@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  createTheme,
-  Theme,
-  CssBaseline,
-  ThemeProvider as MaterialThemeProvider,
-} from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { CssBaseline, createTheme, ThemeProvider as MaterialThemeProvider } from '@mui/material';
 import { blue, orange } from '@mui/material/colors';
+
+import Storage from '@/store';
 
 import font from '@/assets/fonts/NotoSansSC-Thin.woff';
 
@@ -17,54 +14,33 @@ const NotoSansSC = {
 };
 
 interface ThemeContext {
-  theme: Theme;
-  darkMode: boolean | 'auto';
-  setDarkMode: (option: boolean | 'auto') => void;
-  getDarkMode: () => boolean;
+  darkMode: boolean;
+  setDarkMode: (option: boolean) => void;
 }
 
 const themeContext = React.createContext<ThemeContext>({
-  theme: createTheme({
-    palette: {
-      primary: blue,
-      secondary: orange,
-      mode: 'dark',
-    },
-  }),
-  darkMode: 'auto',
+  darkMode: false,
   setDarkMode: () => undefined,
-  getDarkMode: () => true,
 });
 
 export const ThemeProvider: React.FC<{
   children: React.ReactNode;
 }> = (props: { children: React.ReactNode }) => {
-  const [darkModeState, setDarkModeState] = useState<boolean | 'auto'>('auto');
   const { children } = props;
+  const storage = Storage();
+  const [darkMode, setDarkMode] = useState<boolean>(storage.settings.getDarkMode());
 
-  const setDarkMode = (darkMode: boolean | 'auto') => {
-    if (!darkMode) {
-      window.localStorage.setItem('darkMode', '0');
-    } else if (darkMode === true) {
-      window.localStorage.setItem('darkMode', '1');
-    } else {
-      window.localStorage.removeItem('darkMode');
-    }
-    setDarkModeState(darkMode);
-  };
-
-  const getDarkMode = () =>
-    localStorage.getItem('darkMode')
-      ? Boolean(Number(localStorage.getItem('darkMode')))
-      : matchMedia('(prefers-color-scheme: dark)').matches;
+  storage.settings.watchDarkMode((value) => {
+    setDarkMode(value);
+  });
 
   const theme = createTheme({
     palette: {
       primary: blue,
       secondary: orange,
-      mode: getDarkMode() ? 'dark' : 'light',
+      mode: darkMode ? 'dark' : 'light',
       background: {
-        default: getDarkMode() ? '#121212' : '#f5f5f5',
+        default: darkMode ? '#1d1d1d' : '#f5f5f5',
       },
     },
     breakpoints: {
@@ -90,19 +66,11 @@ export const ThemeProvider: React.FC<{
     },
   });
 
-  useEffect(() => {
-    setDarkMode(
-      localStorage.getItem('darkMode') ? Boolean(Number(localStorage.getItem('darkMode'))) : 'auto',
-    );
-  }, []);
-
   return (
     <themeContext.Provider
       value={{
-        theme,
-        darkMode: darkModeState,
-        setDarkMode,
-        getDarkMode,
+        darkMode,
+        setDarkMode: storage.settings.setDarkMode,
       }}
     >
       <MaterialThemeProvider theme={theme}>
@@ -113,6 +81,6 @@ export const ThemeProvider: React.FC<{
   );
 };
 
-const useTheme = (): ThemeContext => useContext(themeContext);
+const useThemeContext = (): ThemeContext => useContext(themeContext);
 
-export default useTheme;
+export default useThemeContext;

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 import { ThemeProvider } from '@/contexts/theme';
 
-import styles from './styles';
+import makeStyles from './styles';
 
 interface LoadingMethods {
   close(): void;
@@ -12,7 +12,7 @@ interface LoadingMethods {
 
 const LoadingComponent = forwardRef<LoadingMethods>((props, ref) => {
   const [open, setOpen] = useState(true);
-  const classes = styles();
+  const classes = makeStyles();
 
   useImperativeHandle(ref, () => ({
     close: () => {

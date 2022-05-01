@@ -1,9 +1,9 @@
 {
-  "name": "potatofield",
-  "productName": "洋芋田",
+  "name": "potatofield-richtext-editor",
+  "productName": "洋芋田富文本编辑器",
   "private": true,
   "version": "1.0.0",
-  "description": "洋芋田",
+  "description": "一款支持将多媒体内容和样式便捷同步到社交媒体公众平台的富文本编辑器。",
   "author": "张志毅",
   "license": "MIT",
   "main": "dist/main/index.cjs",
@@ -17,6 +17,9 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "@mui/icons-material": "^5.6.0",
     "@mui/material": "^5.6.0",

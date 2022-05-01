@@ -1,8 +1,6 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { FolderOpen as EmptyIcon } from '@mui/icons-material';
-
-import useTheme from '@/contexts/theme';
 
 import styles from './styles';
 
@@ -12,7 +10,7 @@ interface EmptyProps {
 
 const empty: React.FC<EmptyProps> = (props) => {
   const { description } = props;
-  const { theme } = useTheme();
+  const theme = useTheme();
   const classes = styles(theme);
 
   return (
