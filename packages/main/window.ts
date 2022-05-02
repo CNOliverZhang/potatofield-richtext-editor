@@ -1,8 +1,12 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
+import storage from '../renderer/src/store';
 
 const DEFAULT_WINDOW_WIDTH = 900;
 const DEFAULT_WINDOW_HEIGHT = 600;
+
+const BG_COLOR = '#f5f5f5';
+const DARK_MODE_BG_COLOR = '#1d1d1d';
 
 const windowList: { window: BrowserWindow; title: string }[] = [];
 
@@ -30,6 +34,7 @@ export const createWindow = (props: CreateWindowProps) => {
   const maxWidth = resizable ? undefined : width;
   const maxHeight = resizable ? undefined : height;
   const maximizable = resizable;
+  const backgroundColor = storage().settings.getDarkMode() ? DARK_MODE_BG_COLOR : BG_COLOR;
   const window = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
@@ -47,6 +52,7 @@ export const createWindow = (props: CreateWindowProps) => {
     maxWidth,
     maxHeight,
     maximizable,
+    backgroundColor,
   });
   if (app.isPackaged) {
     window.loadFile(join(__dirname, '../renderer/index.html') + path);
