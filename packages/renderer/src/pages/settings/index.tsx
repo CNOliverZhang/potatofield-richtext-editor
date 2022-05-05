@@ -6,7 +6,7 @@ import AppWrappper from '@/components/app-wrappper';
 import Custom from './components/custom';
 import styles from './styles';
 
-const App: React.FC = (props) => {
+const Settings: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const [currentTab, setCurrentTab] = useState('upload');
@@ -34,4 +34,4 @@ const App: React.FC = (props) => {
   );
 };
 
-export default App;
+export default Settings;

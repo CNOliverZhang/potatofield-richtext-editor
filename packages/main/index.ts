@@ -2,8 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import { release } from 'os';
 import ElectronStore from 'electron-store';
 
-import { openWindow } from './window';
-import './ipc-listener';
+import { openWindow } from './modules/window';
+import './modules/ipc-listener';
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) {
@@ -25,7 +25,14 @@ ElectronStore.initRenderer();
 let mainWindow: BrowserWindow | null;
 
 app.whenReady().then(() => {
-  mainWindow = openWindow({ title: '洋芋田富文本编辑器', path: '/' });
+  mainWindow = openWindow({
+    title: '洋芋田富文本编辑器',
+    path: '/',
+    width: 900,
+    height: 600,
+    minWidth: 900,
+    minHeight: 600,
+  });
 });
 
 app.on('window-all-closed', () => {

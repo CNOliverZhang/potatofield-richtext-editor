@@ -25,6 +25,7 @@ module.exports = {
   },
   globals: {
     UploadChangeEvent: true,
+    Article: true,
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {

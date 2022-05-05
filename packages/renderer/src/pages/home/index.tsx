@@ -13,8 +13,9 @@ import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
 import { openWindow } from '@/utils/window';
 import styles from './styles';
+import Articles from './components/articles';
 
-const App: React.FC = (props) => {
+const Home: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const [currentTab, setCurrentTab] = useState('articles');
@@ -58,10 +59,10 @@ const App: React.FC = (props) => {
             </IconButton>
           </div>
         </div>
-        <div className="content" />
+        <div className="content">{currentTab === 'articles' && <Articles />}</div>
       </div>
     </AppWrappper>
   );
 };
 
-export default App;
+export default Home;
