@@ -2,6 +2,7 @@ import React from 'react';
 
 import Home from '@/pages/home';
 import Settings from '@/pages/settings';
+import Editor from '@/pages/editor';
 
 const rootRoute = [
   {
@@ -11,6 +12,10 @@ const rootRoute = [
   {
     path: '/settings',
     element: <Settings />,
+  },
+  {
+    path: '/editor',
+    element: <Editor />,
   },
 ];
 

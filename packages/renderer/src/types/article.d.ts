@@ -1,6 +1,4 @@
-interface Article {
-  id: string;
-  title: string;
+interface Article extends SelectableItem {
   content: string;
   createTime: Date;
   updateTime: Date;

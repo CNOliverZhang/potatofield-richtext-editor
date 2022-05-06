@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { ipcRenderer } from 'electron';
 import { createUseStyles } from 'react-jss';
+import { IconButton, TextField, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faFileLines as ArticleIcon,
-  faBrush as StyleIcon,
-  faSliders as SettingsIcon,
-} from '@fortawesome/free-solid-svg-icons';
-import { IconButton, useTheme } from '@mui/material';
+import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
 
-import { openWindow } from '@/utils/window';
 import Storage from '@/store';
+import SelectableList from '@/components/selectable-list';
+import { openWindow } from '@/utils/window';
 import styles from './styles';
-import ArticleList from './list';
 
 const Articles: React.FC = (props) => {
   const theme = useTheme();
@@ -27,9 +22,25 @@ const Articles: React.FC = (props) => {
     setSelectedArticle(article);
   };
 
+  const addArticle = () => {
+    openWindow({ title: '编辑器', path: '/editor', width: 1200, height: 800 });
+  };
+
   return (
     <div className={classes.articles}>
-      <ArticleList articleList={articleList} onSelect={onListSelect} />
+      <div className="article-list">
+        <div className="article-list-header">
+          <TextField size="small" className="search" label="搜索标题" />
+          <IconButton className="add-button">
+            <FontAwesomeIcon icon={AddIcon} onClick={addArticle} />
+          </IconButton>
+        </div>
+        <SelectableList
+          itemList={articleList}
+          onSelect={onListSelect}
+          selectedItem={selectedArticle}
+        />
+      </div>
     </div>
   );
 };

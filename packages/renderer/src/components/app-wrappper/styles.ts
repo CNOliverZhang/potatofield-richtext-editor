@@ -66,8 +66,8 @@ export default (theme: Theme) => ({
       },
 
       '&.mac': {
-        justifyContent: 'flex-end',
-        flexDirection: 'row-reverse',
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
 
         '& .app-bar-button': {
           width: 14,
@@ -76,15 +76,15 @@ export default (theme: Theme) => ({
           marginLeft: 8,
 
           '&.minimize': {
-            backgroundColor: theme.palette.success.light,
+            backgroundColor: theme.palette.warning.main,
           },
 
           '&.maximize': {
-            backgroundColor: theme.palette.warning.light,
+            backgroundColor: theme.palette.success.main,
           },
 
           '&.close': {
-            backgroundColor: theme.palette.error.light,
+            backgroundColor: theme.palette.error.main,
           },
         },
       },

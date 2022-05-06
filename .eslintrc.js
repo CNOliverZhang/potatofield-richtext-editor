@@ -25,6 +25,7 @@ module.exports = {
   },
   globals: {
     UploadChangeEvent: true,
+    SelectableItem: true,
     Article: true,
   },
   plugins: ['react', '@typescript-eslint'],
@@ -48,6 +49,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/require-default-props': 'off',
     'import/no-cycle': 'off',
+    'react/no-danger': 'off',
     'import/no-dynamic-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/extensions': [

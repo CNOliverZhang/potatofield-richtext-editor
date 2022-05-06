@@ -37,17 +37,32 @@ const App: React.FC<AppWrapperProps> = (props) => {
     <div className={classes.root}>
       <div className={`app-bar ${isWindows ? 'win' : 'mac'} ${props.noHeight ? 'no-height' : ''}`}>
         {props.title && <div className="app-bar-title">{props.title}</div>}
-        <div className="app-bar-button minimize" onClick={() => handleIpcCommand('minimize')}>
-          {isWindows && <FontAwesomeIcon icon={minimizeIcon} />}
-        </div>
-        {!props.disableResize && (
-          <div className="app-bar-button maximize" onClick={() => handleIpcCommand('maximize')}>
-            {isWindows && <FontAwesomeIcon icon={maximizeIcon} />}
-          </div>
+        {isWindows ? (
+          <>
+            <div className="app-bar-button minimize" onClick={() => handleIpcCommand('minimize')}>
+              <FontAwesomeIcon icon={minimizeIcon} />
+            </div>
+            {!props.disableResize && (
+              <div className="app-bar-button maximize" onClick={() => handleIpcCommand('maximize')}>
+                <FontAwesomeIcon icon={maximizeIcon} />
+              </div>
+            )}
+            <div className="app-bar-button close" onClick={handleClose}>
+              <FontAwesomeIcon icon={closeIcon} />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="app-bar-button close" onClick={handleClose} />
+            <div className="app-bar-button minimize" onClick={() => handleIpcCommand('minimize')} />
+            {!props.disableResize && (
+              <div
+                className="app-bar-button maximize"
+                onClick={() => handleIpcCommand('maximize')}
+              />
+            )}
+          </>
         )}
-        <div className="app-bar-button close" onClick={handleClose}>
-          {isWindows && <FontAwesomeIcon icon={closeIcon} />}
-        </div>
       </div>
       <div className="app-content">{props.children}</div>
     </div>
