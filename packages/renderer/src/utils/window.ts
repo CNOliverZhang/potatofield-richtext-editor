@@ -13,3 +13,7 @@ export interface OpenWindowProps {
 export const openWindow = (props: OpenWindowProps) => {
   ipcRenderer.send('open', props);
 };
+
+export const closeWindow = () => {
+  ipcRenderer.send('close');
+};

@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { IconButton, TextField, useTheme } from '@mui/material';
+import { ipcRenderer } from 'electron';
+import { IconButton, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
 
 import Storage from '@/store';
-import SelectableList from '@/components/selectable-list';
+import Empty from '@/components/empty';
 import { openWindow } from '@/utils/window';
+import SelectableList from './selectable-article-list';
 import styles from './styles';
 
 const Articles: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const storage = Storage();
+  const [isWindows] = useState(ipcRenderer.sendSync('platform') === 'win32');
   const [articleList, setArticleList] = useState(storage.articles.getArticleList());
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
@@ -36,11 +39,24 @@ const Articles: React.FC = (props) => {
           </IconButton>
         </div>
         <SelectableList
-          itemList={articleList}
+          articleList={articleList}
           onSelect={onListSelect}
-          selectedItem={selectedArticle}
+          selectedArticle={selectedArticle}
         />
       </div>
+      {selectedArticle ? (
+        <div className="article-preview">
+          <div className={`article-preview-title ${isWindows ? 'app-wrapper-padding' : ''}`}>
+            <Typography variant="h4" className="article-preview-title-text">
+              {selectedArticle?.title}
+            </Typography>
+          </div>
+        </div>
+      ) : (
+        <div className="article-preview empty">
+          <Empty description="尚未选择" />
+        </div>
+      )}
     </div>
   );
 };

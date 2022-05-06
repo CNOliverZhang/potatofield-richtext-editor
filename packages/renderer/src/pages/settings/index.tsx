@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { useTheme } from '@mui/material';
 
 import AppWrappper from '@/components/app-wrappper';
-import Custom from './components/custom';
+import Custom from './custom';
 import styles from './styles';
 
 const Settings: React.FC = (props) => {

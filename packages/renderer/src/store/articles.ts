@@ -6,15 +6,15 @@ const articles = (store: Store) => {
   };
 
   const getArticleList = () => {
-    return store.get('articleList') as Article[];
+    return (store.get('articleList') as Article[]) || [];
   };
 
   const addArticle = (article: Article) => {
-    store.set('articleList', [...(store.get('articleList') as Article[]), article]);
+    store.set('articleList', [...((store.get('articleList') as Article[]) || []), article]);
   };
 
   const removeArticle = (articleId: string) => {
-    const articleList = store.get('articleList') as Article[];
+    const articleList = (store.get('articleList') as Article[]) || [];
     const index = articleList.findIndex((article) => article.id === articleId);
     if (index >= 0) {
       articleList.splice(index, 1);
@@ -23,7 +23,7 @@ const articles = (store: Store) => {
   };
 
   const updateArticle = (articleId: string, updatedArticle: Article) => {
-    const articleList = store.get('articleList') as Article[];
+    const articleList = (store.get('articleList') as Article[]) || [];
     const index = articleList.findIndex((article) => article.id === articleId);
     if (index >= 0) {
       articleList.splice(index, 1, updatedArticle);

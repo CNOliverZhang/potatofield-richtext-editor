@@ -13,7 +13,7 @@ import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
 import { openWindow } from '@/utils/window';
 import styles from './styles';
-import Articles from './components/articles';
+import Articles from './articles';
 
 const Home: React.FC = (props) => {
   const theme = useTheme();

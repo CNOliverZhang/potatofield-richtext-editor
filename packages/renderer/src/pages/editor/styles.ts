@@ -30,8 +30,11 @@ export default (theme: Theme) => ({
       backgroundColor: theme.palette.background.default,
       borderLeft: `1px ${theme.palette.divider} solid`,
 
-      '&-title': {
+      '&-controller': {
         padding: theme.spacing(2),
+      },
+
+      '&-title': {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         display: '-webkit-box',
@@ -44,17 +47,20 @@ export default (theme: Theme) => ({
         height: 0,
         flexGrow: 1,
         overflowY: 'auto',
-        padding: theme.spacing(2),
-      },
-
-      '& .update-time': {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
       },
 
       '& .button-group': {
-        padding: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
         display: 'flex',
+
+        '&:first-child': {
+          marginTop: 0,
+        },
+
+        '&:last-child': {
+          marginBottom: 0,
+        },
 
         '& .action-button': {
           width: 0,
@@ -65,10 +71,10 @@ export default (theme: Theme) => ({
           },
         },
       },
-    },
 
-    '& .app-wrapper-padding': {
-      paddingTop: 40,
+      '& .app-wrapper-padding': {
+        paddingTop: 40,
+      },
     },
   },
 });

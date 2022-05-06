@@ -4,6 +4,7 @@ import { ipcRenderer } from 'electron';
 import { useLocation } from 'react-router';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
 import { Button, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan as DeleteIcon, faCopy as CopyIcon } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +12,8 @@ import Vditor from 'vditor';
 
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
+import Dialog from '@/imperative-components/dialog';
+import { closeWindow } from '@/utils/window';
 import Storage from '@/store';
 import styles from './styles';
 
@@ -30,6 +33,43 @@ const Editor: React.FC = (props) => {
   const watchEditorContentChange = (value: string) => {
     articleForm.setValue('content', value, { shouldDirty: true });
     Vditor.md2html(value).then((html) => setPreviewHtml(html));
+  };
+
+  const saveAsNew = () => {
+    const newId = uuid();
+    const article: Article = {
+      ...articleForm.getValues(),
+      id: newId,
+      createTime: new Date(),
+      updateTime: new Date(),
+    };
+    storage.articles.addArticle(article);
+    setId(newId);
+    articleForm.reset(article);
+  };
+
+  const save = () => {
+    if (id) {
+      const article: Article = {
+        ...articleForm.getValues(),
+        updateTime: new Date(),
+      };
+      storage.articles.updateArticle(id, article);
+      articleForm.reset(article);
+    } else {
+      saveAsNew();
+    }
+  };
+
+  const remove = () => {
+    new Dialog({
+      title: '操作确认',
+      content: '确定删除文章吗？',
+      onConfirm: () => {
+        storage.articles.removeArticle(id as string);
+        closeWindow();
+      },
+    });
   };
 
   useEffect(() => {
@@ -105,68 +145,73 @@ const Editor: React.FC = (props) => {
           />
           <div id="vditor" className="vditor" />
         </div>
-        <div className={`preview ${isWindows ? 'app-wrapper-padding' : ''}`}>
-          <Typography variant="h4" className="preview-title">
-            {articleForm.watch('title') || '未命名'}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" className="update-time">
-            {articleForm.watch('updateTime')
-              ? `保存于 ${moment(articleForm.watch('updateTime') || new Date()).format(
-                  'YYYY 年 MM 月 DD 日 HH:mm:SS',
-                )}`
-              : '尚未保存'}
-          </Typography>
-          <div className="button-group">
-            <Button
-              color="success"
-              variant="contained"
-              className="action-button"
-              startIcon={<FontAwesomeIcon icon={CopyIcon} />}
-              disabled={!articleForm.watch('content')}
-            >
-              复制富文本
-            </Button>
-            <Button
-              color="error"
-              variant="contained"
-              className="action-button"
-              startIcon={<FontAwesomeIcon icon={DeleteIcon} />}
-              disabled={!id}
-            >
-              删除
-            </Button>
+        <div className="preview">
+          <div className={`preview-controller ${isWindows ? 'app-wrapper-padding' : ''}`}>
+            <Typography variant="h4" className="preview-title" gutterBottom>
+              {articleForm.watch('title') || '未命名'}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              {articleForm.watch('updateTime')
+                ? `保存于 ${moment(articleForm.watch('updateTime') || new Date()).format(
+                    'YYYY 年 MM 月 DD 日 HH:mm:SS',
+                  )}`
+                : '尚未保存'}
+            </Typography>
+            <div className="button-group">
+              <Button
+                color="success"
+                variant="contained"
+                className="action-button"
+                startIcon={<FontAwesomeIcon icon={CopyIcon} />}
+                disabled={!articleForm.watch('content')}
+              >
+                复制富文本
+              </Button>
+              <Button
+                color="error"
+                variant="contained"
+                className="action-button"
+                onClick={remove}
+                startIcon={<FontAwesomeIcon icon={DeleteIcon} />}
+                disabled={!id}
+              >
+                删除
+              </Button>
+            </div>
+            <div className="button-group">
+              <Button
+                color="primary"
+                variant="contained"
+                className="action-button"
+                onClick={save}
+                disabled={
+                  !articleForm.formState.isDirty ||
+                  !articleForm.watch('content') ||
+                  !articleForm.watch('title')
+                }
+              >
+                保存
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                className="action-button"
+                onClick={saveAsNew}
+                disabled={!id || !articleForm.watch('content') || !articleForm.watch('title')}
+              >
+                保存副本
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                className="action-button"
+                disabled={!articleForm.watch('content') || !articleForm.watch('title')}
+              >
+                保存为图片
+              </Button>
+            </div>
           </div>
           <div className="preview-wrapper" dangerouslySetInnerHTML={{ __html: previewHtml }} />
-          <div className="button-group">
-            <Button
-              color="primary"
-              variant="contained"
-              className="action-button"
-              disabled={
-                !articleForm.formState.isDirty ||
-                !articleForm.watch('content') ||
-                !articleForm.watch('title')
-              }
-            >
-              保存
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              className="action-button"
-              disabled={!id || !articleForm.watch('content') || !articleForm.watch('title')}
-            >
-              保存副本
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              className="action-button"
-              disabled={!articleForm.watch('content') || !articleForm.watch('title')}
-            >
-              保存为图片
-            </Button>
-          </div>
         </div>
       </div>
     </AppWrappper>
