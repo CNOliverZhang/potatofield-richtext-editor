@@ -39,6 +39,8 @@ export default (theme: Theme) => ({
       '&-title': {
         padding: theme.spacing(2),
         backgroundColor: theme.palette.background.default,
+        borderBottom: `1px ${theme.palette.divider} solid`,
+        '-webkit-app-region': 'drag',
 
         '&-text': {
           overflow: 'hidden',
@@ -47,6 +49,10 @@ export default (theme: Theme) => ({
           '-webkit-line-clamp': 2,
           '-webkit-box-orient': 'vertical',
         },
+      },
+
+      '&-content': {
+        padding: theme.spacing(2),
       },
 
       '& .app-wrapper-padding': {
@@ -58,6 +64,7 @@ export default (theme: Theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.palette.background.default,
+        '-webkit-app-region': 'drag',
       },
     },
   },

@@ -19,6 +19,10 @@ export default (theme: Theme) => ({
         flexGrow: 1,
         marginTop: theme.spacing(1),
       },
+
+      '&.app-wrapper-padding': {
+        paddingTop: 40,
+      },
     },
 
     '& .preview': {
@@ -32,6 +36,12 @@ export default (theme: Theme) => ({
 
       '&-controller': {
         padding: theme.spacing(2),
+        borderBottom: `1px ${theme.palette.divider} solid`,
+        '-webkit-app-region': 'drag',
+
+        '&.app-wrapper-padding': {
+          paddingTop: 40,
+        },
       },
 
       '&-title': {
@@ -47,12 +57,14 @@ export default (theme: Theme) => ({
         height: 0,
         flexGrow: 1,
         overflowY: 'auto',
+        padding: theme.spacing(2),
       },
 
       '& .button-group': {
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2),
         display: 'flex',
+        '-webkit-app-region': 'no-drag',
 
         '&:first-child': {
           marginTop: 0,
@@ -70,10 +82,6 @@ export default (theme: Theme) => ({
             marginRight: theme.spacing(1),
           },
         },
-      },
-
-      '& .app-wrapper-padding': {
-        paddingTop: 40,
       },
     },
   },

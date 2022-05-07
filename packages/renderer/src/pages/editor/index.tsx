@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import { useLocation } from 'react-router';
@@ -12,6 +12,7 @@ import Vditor from 'vditor';
 
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
+import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
 import Storage from '@/store';
@@ -27,6 +28,7 @@ const Editor: React.FC = (props) => {
   const [id, setId] = useState(new URLSearchParams(useLocation().search).get('id'));
   const [editor, setEditor] = useState<Vditor>();
   const [previewHtml, setPreviewHtml] = useState('');
+  const idRef = useRef(id);
 
   const articleForm = useForm<Article>();
 
@@ -49,12 +51,12 @@ const Editor: React.FC = (props) => {
   };
 
   const save = () => {
-    if (id) {
+    if (idRef.current) {
       const article: Article = {
         ...articleForm.getValues(),
         updateTime: new Date(),
       };
-      storage.articles.updateArticle(id, article);
+      storage.articles.updateArticle(idRef.current, article);
       articleForm.reset(article);
     } else {
       saveAsNew();
@@ -72,7 +74,27 @@ const Editor: React.FC = (props) => {
     });
   };
 
+  storage.articles.watchArticleList((articleList) => {
+    if (idRef.current && !articleList.find((article) => article.id === idRef.current)) {
+      new Message({
+        content: '正在编辑的文件已被删除，请重新保存',
+        type: 'warning',
+      });
+      articleForm.setValue('id', '', { shouldDirty: true });
+      setId('');
+    }
+  });
+
   useEffect(() => {
+    let content = '';
+    if (idRef.current) {
+      const article = storage.articles.getArticleList().find((item) => item.id === idRef.current);
+      if (article) {
+        content = article.content;
+        Vditor.md2html(content).then((html) => setPreviewHtml(html));
+        articleForm.reset(article);
+      }
+    }
     const vditor: Vditor = new Vditor('vditor', {
       theme: darkMode ? 'dark' : 'classic',
       preview: {
@@ -118,18 +140,17 @@ const Editor: React.FC = (props) => {
         enable: false,
       },
       icon: 'material',
+      value: content,
     });
     setEditor(vditor);
-    if (id) {
-      const article = storage.articles.getArticleList().find((item) => item.id === id);
-      if (article) {
-        vditor.setValue(article.content);
-      }
-    }
     return () => {
       vditor.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    idRef.current = id;
+  }, [id]);
 
   return (
     <AppWrappper noHeight>
