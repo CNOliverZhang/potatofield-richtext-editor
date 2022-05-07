@@ -20,11 +20,8 @@ export default (theme: Theme) => ({
     },
 
     '& .article': {
-      height: 90,
       borderRadius: theme.shape.borderRadius,
       padding: theme.spacing(1),
-      display: 'flex',
-      flexDirection: 'column',
 
       '&.selected': {
         backgroundColor: alpha(theme.palette.primary.main, 0.1),
@@ -61,11 +58,6 @@ export default (theme: Theme) => ({
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        flexGrow: 1,
-      },
-
-      '&-time': {
-        textAlign: 'right',
       },
     },
   },

@@ -37,7 +37,6 @@ export default (theme: Theme) => ({
       '&-controller': {
         padding: theme.spacing(2),
         borderBottom: `1px ${theme.palette.divider} solid`,
-        '-webkit-app-region': 'drag',
 
         '&.app-wrapper-padding': {
           paddingTop: 40,
@@ -64,7 +63,6 @@ export default (theme: Theme) => ({
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2),
         display: 'flex',
-        '-webkit-app-region': 'no-drag',
 
         '&:first-child': {
           marginTop: 0,

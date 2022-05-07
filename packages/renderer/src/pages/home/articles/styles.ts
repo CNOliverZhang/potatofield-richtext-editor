@@ -35,6 +35,8 @@ export default (theme: Theme) => ({
       width: 0,
       flexGrow: 1,
       borderLeft: `1px ${theme.palette.divider} solid`,
+      display: 'flex',
+      flexDirection: 'column',
 
       '&-title': {
         padding: theme.spacing(2),
@@ -52,7 +54,10 @@ export default (theme: Theme) => ({
       },
 
       '&-content': {
+        height: 0,
+        flexGrow: 1,
         padding: theme.spacing(2),
+        overflowY: 'auto',
       },
 
       '& .app-wrapper-padding': {

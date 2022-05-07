@@ -74,13 +74,13 @@ const SelectableArticleList: React.FC<SelectableArticleListProps> = (props) => {
                   onClick={() => remove(item.id)}
                 />
               </div>
-              <Typography variant="body2" className="article-intro">
-                {item.content}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" className="article-time">
+              <Typography variant="caption" color="textSecondary">
                 {moment(item.updateTime).format(
                   moment(item.updateTime).isSame(now, 'day') ? '今天 HH:mm' : 'YYYY 年 MM 月 DD 日',
                 )}
+              </Typography>
+              <Typography variant="body2" className="article-intro">
+                {item.content}
               </Typography>
             </div>
           ))
