@@ -15,6 +15,7 @@ import AppWrappper from '@/components/app-wrappper';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
+import { isWindows as getIsWindows } from '@/utils/platform';
 import Storage from '@/store';
 import styles from './styles';
 
@@ -24,7 +25,7 @@ const Editor: React.FC = (props) => {
   const classes = createUseStyles(styles)({ theme });
   const { darkMode } = useThemeContext();
 
-  const [isWindows] = useState(ipcRenderer.sendSync('platform') === 'win32');
+  const [isWindows] = useState(getIsWindows());
   const [id, setId] = useState(new URLSearchParams(useLocation().search).get('id'));
   const [editor, setEditor] = useState<Vditor>();
   const [previewHtml, setPreviewHtml] = useState('');

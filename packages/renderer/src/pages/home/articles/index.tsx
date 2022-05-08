@@ -9,6 +9,7 @@ import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
 import Storage from '@/store';
 import Empty from '@/components/empty';
 import { openWindow } from '@/utils/window';
+import { isWindows as getIsWindows } from '@/utils/platform';
 import SelectableList from './selectable-article-list';
 import styles from './styles';
 
@@ -16,7 +17,7 @@ const Articles: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const storage = Storage();
-  const [isWindows] = useState(ipcRenderer.sendSync('platform') === 'win32');
+  const [isWindows] = useState(getIsWindows());
   const [articleList, setArticleList] = useState(storage.articles.getArticleList());
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [selectedArticleHtml, setSelectedArticleHtml] = useState('');

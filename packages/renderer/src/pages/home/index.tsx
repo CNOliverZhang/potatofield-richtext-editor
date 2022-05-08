@@ -12,6 +12,7 @@ import { IconButton, useTheme } from '@mui/material';
 import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
 import { openWindow } from '@/utils/window';
+import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 import Articles from './articles';
 
@@ -19,7 +20,7 @@ const Home: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const [currentTab, setCurrentTab] = useState('articles');
-  const [isWindows] = useState(ipcRenderer.sendSync('platform') === 'win32');
+  const [isWindows] = useState(getIsWindows());
 
   return (
     <AppWrappper noHeight>

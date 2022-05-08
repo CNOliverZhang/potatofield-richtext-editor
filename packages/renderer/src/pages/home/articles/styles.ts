@@ -69,7 +69,6 @@ export default (theme: Theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.palette.background.default,
-        '-webkit-app-region': 'drag',
       },
     },
   },

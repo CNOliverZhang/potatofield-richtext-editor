@@ -8,7 +8,7 @@ const DEFAULT_WINDOW_HEIGHT = 600;
 const BG_COLOR = '#f5f5f5';
 const DARK_MODE_BG_COLOR = '#1d1d1d';
 
-const windowList: { window: BrowserWindow; title: string }[] = [];
+const windowList: { window: BrowserWindow; path: string }[] = [];
 
 export interface CreateWindowProps {
   title: string;
@@ -61,13 +61,13 @@ export const createWindow = (props: CreateWindowProps) => {
     window.loadURL(url + path);
     window.webContents.openDevTools({ mode: 'detach' });
   }
-  windowList.push({ window, title: props.title });
+  windowList.push({ window, path: props.path });
   window.on('system-context-menu', (e: Event) => {
     e.preventDefault();
   });
   // 关闭窗口后，从窗口列表移除
   window.on('closed', () => {
-    const windowIndex = windowList.findIndex((win) => win.title === props.title);
+    const windowIndex = windowList.findIndex((win) => win.path === props.path);
     windowList.splice(windowIndex, 1);
   });
   // 窗口最小化之后再取消最小化，尺寸会变，手动调整回正常尺寸
@@ -83,7 +83,7 @@ export const createWindow = (props: CreateWindowProps) => {
 
 // 如果窗口已存在，直接打开；否则创建窗口
 export const openWindow = (props: CreateWindowProps) => {
-  const windowInfo = windowList.find((win) => win.title === props.title);
+  const windowInfo = windowList.find((win) => win.path === props.path);
   if (windowInfo) {
     windowInfo.window.show();
     return windowInfo.window;

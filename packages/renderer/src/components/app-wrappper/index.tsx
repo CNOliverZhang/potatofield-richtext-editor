@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material';
 
+import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 
 interface AppWrapperProps {
@@ -21,7 +22,7 @@ interface AppWrapperProps {
 const App: React.FC<AppWrapperProps> = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
-  const [isWindows] = useState(ipcRenderer.sendSync('platform') === 'win32');
+  const [isWindows] = useState(getIsWindows());
 
   const handleIpcCommand = (command: string) => ipcRenderer.send(command);
 
