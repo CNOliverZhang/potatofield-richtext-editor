@@ -67,12 +67,14 @@ const Articles: React.FC = (props) => {
               {selectedArticle?.title}
             </Typography>
           </div>
-          {selectedArticleHtml && (
-            <div
-              className="article-preview-content"
-              dangerouslySetInnerHTML={{ __html: selectedArticleHtml }}
-            />
-          )}
+          <div className="article-preview-content">
+            {selectedArticleHtml && (
+              <div
+                className="article-preview-content-html"
+                dangerouslySetInnerHTML={{ __html: selectedArticleHtml }}
+              />
+            )}
+          </div>
         </div>
       ) : (
         <div className="article-preview empty">

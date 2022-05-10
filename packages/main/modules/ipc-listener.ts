@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { CreateWindowProps, openWindow } from './window';
 
 ipcMain.on('platform', (event) => {
@@ -29,4 +29,21 @@ ipcMain.on('relaunch', () => {
 
 ipcMain.on('open', (event, args: CreateWindowProps) => {
   openWindow(args);
+});
+
+ipcMain.on('selectFile', (event, args?: SelectFileProps) => {
+  const properties: ('openFile' | 'multiSelections')[] = ['openFile'];
+  if (args?.multiple) {
+    properties.push('multiSelections');
+  }
+  event.returnValue = dialog.showOpenDialogSync({
+    filters: args?.filters,
+    properties,
+  });
+});
+
+ipcMain.on('selectDirectory', (event) => {
+  event.returnValue = dialog.showOpenDialogSync({
+    properties: ['openDirectory'],
+  });
 });

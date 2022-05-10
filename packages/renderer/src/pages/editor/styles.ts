@@ -75,7 +75,7 @@ export default (theme: Theme) => ({
         '& .action-button': {
           width: 0,
           flexGrow: 1,
-          color: theme.palette.text.primary,
+          color: theme.palette.common.white,
 
           '&:not(:last-child)': {
             marginRight: theme.spacing(1),

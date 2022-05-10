@@ -56,8 +56,11 @@ export default (theme: Theme) => ({
       '&-content': {
         height: 0,
         flexGrow: 1,
-        padding: theme.spacing(2),
         overflowY: 'auto',
+
+        '&-html': {
+          padding: theme.spacing(2),
+        },
       },
 
       '& .app-wrapper-padding': {
