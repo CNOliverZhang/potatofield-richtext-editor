@@ -8,6 +8,7 @@ import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
 
 import Storage from '@/store';
 import Empty from '@/components/empty';
+import RichTextRenderer from '@/components/rich-text-renderer';
 import { openWindow } from '@/utils/window';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import SelectableList from './selectable-article-list';
@@ -20,7 +21,7 @@ const Articles: React.FC = (props) => {
   const [isWindows] = useState(getIsWindows());
   const [articleList, setArticleList] = useState(storage.articles.getArticleList());
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [selectedArticleHtml, setSelectedArticleHtml] = useState('');
+  const [selectedArticleMarkdown, setSelectedArticleMarkdown] = useState('');
   const selectedArticleRef = useRef<Article | null>();
 
   storage.articles.watchArticleList((articles) => setArticleList(articles));
@@ -28,13 +29,13 @@ const Articles: React.FC = (props) => {
   storage.articles.watchArticleList((storageArticleList) => {
     if (!storageArticleList.find((article) => article.id === selectedArticleRef.current?.id)) {
       setSelectedArticle(null);
-      setSelectedArticleHtml('');
+      setSelectedArticleMarkdown('');
     }
   });
 
   const onListSelect = (article: Article) => {
     setSelectedArticle(article);
-    Vditor.md2html(article.content).then((html) => setSelectedArticleHtml(html));
+    setSelectedArticleMarkdown(article.content);
   };
 
   const addArticle = () => {
@@ -68,10 +69,10 @@ const Articles: React.FC = (props) => {
             </Typography>
           </div>
           <div className="article-preview-content">
-            {selectedArticleHtml && (
-              <div
-                className="article-preview-content-html"
-                dangerouslySetInnerHTML={{ __html: selectedArticleHtml }}
+            {selectedArticleMarkdown && (
+              <RichTextRenderer
+                elementId="article-preview-content-inner"
+                markdown={selectedArticleMarkdown}
               />
             )}
           </div>

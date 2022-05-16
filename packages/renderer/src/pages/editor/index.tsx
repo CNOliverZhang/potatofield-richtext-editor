@@ -12,6 +12,7 @@ import Vditor from 'vditor';
 
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
+import RichTextRenderer from '@/components/rich-text-renderer';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
@@ -28,14 +29,14 @@ const Editor: React.FC = (props) => {
   const [isWindows] = useState(getIsWindows());
   const [id, setId] = useState(new URLSearchParams(useLocation().search).get('id'));
   const [editor, setEditor] = useState<Vditor>();
-  const [previewHtml, setPreviewHtml] = useState('');
+  const [markdown, setMarkdown] = useState('');
   const idRef = useRef(id);
 
   const articleForm = useForm<Article>();
 
   const watchEditorContentChange = (value: string) => {
     articleForm.setValue('content', value, { shouldDirty: true });
-    Vditor.md2html(value).then((html) => setPreviewHtml(html));
+    setMarkdown(value);
   };
 
   const saveAsNew = () => {
@@ -75,6 +76,19 @@ const Editor: React.FC = (props) => {
     });
   };
 
+  const copy = () => {
+    const element = document.getElementById('rich-text-renderer') as HTMLElement;
+    element.focus();
+    window.getSelection()?.removeAllRanges();
+    const range = document.createRange();
+    range.setStartBefore(element.firstChild as Node);
+    range.setEndAfter(element.lastChild as Node);
+    window.getSelection()?.addRange(range);
+    document.execCommand('copy');
+    window.getSelection()?.removeAllRanges();
+    new Message({ type: 'success', content: '复制成功' });
+  };
+
   storage.articles.watchArticleList((articleList) => {
     if (idRef.current && !articleList.find((article) => article.id === idRef.current)) {
       new Message({
@@ -92,7 +106,7 @@ const Editor: React.FC = (props) => {
       const article = storage.articles.getArticleList().find((item) => item.id === idRef.current);
       if (article) {
         content = article.content;
-        Vditor.md2html(content).then((html) => setPreviewHtml(html));
+        setMarkdown(article.content);
         articleForm.reset(article);
       }
     }
@@ -185,6 +199,7 @@ const Editor: React.FC = (props) => {
                 variant="contained"
                 className="action-button"
                 startIcon={<FontAwesomeIcon icon={CopyIcon} />}
+                onClick={copy}
                 disabled={!articleForm.watch('content')}
               >
                 复制富文本
@@ -229,11 +244,13 @@ const Editor: React.FC = (props) => {
                 className="action-button"
                 disabled={!articleForm.watch('content') || !articleForm.watch('title')}
               >
-                保存为图片
+                导出图片
               </Button>
             </div>
           </div>
-          <div className="preview-wrapper" dangerouslySetInnerHTML={{ __html: previewHtml }} />
+          <div className="preview-wrapper">
+            <RichTextRenderer elementId="rich-text-renderer" markdown={markdown} />
+          </div>
         </div>
       </div>
     </AppWrappper>
