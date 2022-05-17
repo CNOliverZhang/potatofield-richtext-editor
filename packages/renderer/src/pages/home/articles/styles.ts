@@ -42,7 +42,6 @@ export default (theme: Theme) => ({
         padding: theme.spacing(2),
         backgroundColor: theme.palette.background.default,
         borderBottom: `1px ${theme.palette.divider} solid`,
-        '-webkit-app-region': 'drag',
 
         '&-text': {
           overflow: 'hidden',

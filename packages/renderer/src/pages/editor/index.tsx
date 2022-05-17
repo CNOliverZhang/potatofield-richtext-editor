@@ -100,6 +100,10 @@ const Editor: React.FC = (props) => {
     }
   });
 
+  storage.settings.watchDarkMode((newDarkMode) => {
+    editor?.setTheme(newDarkMode ? 'dark' : 'classic');
+  });
+
   useEffect(() => {
     let content = '';
     if (idRef.current) {
