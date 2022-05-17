@@ -1,4 +1,4 @@
-export default [
+export const themes = [
   {
     id: 'default',
     name: 'default',
@@ -7,3 +7,13 @@ export default [
     styleSheet: ``,
   },
 ];
+
+export const baseStyleSheet = `
+img {
+  max-width: 100%;
+}
+
+pre code {
+  overflow-x: auto;
+}
+`;

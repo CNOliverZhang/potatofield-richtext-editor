@@ -1,18 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useTheme } from '@mui/material';
+import path from 'path';
+import hljs from 'highlight.js';
 import juice from 'juice';
 import Vditor from 'vditor';
 
 import { useThrottle } from '@/utils/tool';
 import Storage from '@/store';
-import presetThemes from '@/consts/presetThemes';
+import { themes, baseStyleSheet } from '@/consts/presetThemes';
 import styles from './styles';
 
 interface RichTextRendererProps {
   elementId: string;
   markdown: string;
 }
+
+const hljsStyleSheetFiles = import.meta.globEager('/src/consts/hljs/*.css', {
+  assert: { type: 'raw' },
+});
+const hljsThemes = Object.keys(hljsStyleSheetFiles).map((filePath) => ({
+  name: filePath.split(path.sep).pop()?.split('.')[0],
+  styleSheet: hljsStyleSheetFiles[filePath],
+}));
 
 const Editor: React.FC<RichTextRendererProps> = (props) => {
   const storage = Storage();
@@ -21,13 +31,19 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
 
   const [html, setHtml] = useState('');
   const [styleSheet, setStyleSheet] = useState('');
+  const [hljsTheme, setHljsTheme] = useState('');
   const [customThemeList, setCustomThemeList] = useState([...storage.themes.getThemeList()]);
 
   const customThemeListRef = useRef(customThemeList);
 
   const rerender = (markdown: string, stylesheet: string) => {
     Vditor.md2html(markdown).then((rawHtml) => {
-      setHtml(juice.inlineContent(rawHtml, stylesheet));
+      const div = document.createElement('div');
+      div.innerHTML = rawHtml;
+      div.querySelectorAll('pre code').forEach((el) => {
+        hljs.highlightElement(el as HTMLElement);
+      });
+      setHtml(juice.inlineContent(div.innerHTML, `${baseStyleSheet}\n${stylesheet}`));
     });
   };
 
@@ -39,10 +55,13 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   // 默认主题更新后使用新主题
   storage.themes.watchDefaultThemeId((defaultThemeId) => {
     const defaultTheme =
-      [...presetThemes, ...customThemeListRef.current].find((item) => item.id === defaultThemeId) ||
-      presetThemes[0];
+      [...themes, ...customThemeListRef.current].find((item) => item.id === defaultThemeId) ||
+      themes[0];
     setStyleSheet(defaultTheme.styleSheet);
   });
+
+  // 代码主题更新后使用新主题
+  storage.themes.watchDefaultHljsTheme((defaultHljsTheme) => setHljsTheme(defaultHljsTheme));
 
   useEffect(() => {
     customThemeListRef.current = customThemeList;
@@ -50,15 +69,23 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
 
   // 传入的 markdown 变更或主题样式表变更时重新渲染
   useEffect(() => {
-    debouncedRender.current?.(props.markdown, styleSheet);
-  }, [props.markdown, styleSheet]);
+    debouncedRender.current?.(
+      props.markdown,
+      `${styleSheet}\n${
+        (
+          hljsThemes.find((item) => item.name === hljsTheme) ||
+          hljsThemes.find((item) => item.name === 'default')
+        )?.styleSheet
+      }`,
+    );
+  }, [props.markdown, styleSheet, hljsTheme]);
 
   useEffect(() => {
     const defaultThemeId = storage.themes.getDefaultThemeId();
     const defaultTheme =
-      [...presetThemes, ...customThemeList].find((item) => item.id === defaultThemeId) ||
-      presetThemes[0];
+      [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
     setStyleSheet(defaultTheme.styleSheet);
+    setHljsTheme(storage.themes.getDefaultHljsTheme());
   }, []);
 
   return (

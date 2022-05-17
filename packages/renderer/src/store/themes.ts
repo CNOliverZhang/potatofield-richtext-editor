@@ -51,6 +51,20 @@ const themes = (store: Store) => {
     });
   };
 
+  const setDefaultHljsTheme = (theme: string) => {
+    store.set('defaultHljsTheme', theme);
+  };
+
+  const getDefaultHljsTheme = () => {
+    return store.get('defaultHljsTheme') as string;
+  };
+
+  const watchDefaultHljsTheme = (callback: (theme: string) => void) => {
+    store.onDidChange('defaultHljsTheme', (newValue, oldValue) => {
+      callback(newValue as string);
+    });
+  };
+
   return {
     setThemeList,
     getThemeList,
@@ -61,6 +75,9 @@ const themes = (store: Store) => {
     setDefaultThemeId,
     getDefaultThemeId,
     watchDefaultThemeId,
+    setDefaultHljsTheme,
+    getDefaultHljsTheme,
+    watchDefaultHljsTheme,
   };
 };
 

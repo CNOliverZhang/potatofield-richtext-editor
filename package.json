@@ -25,6 +25,7 @@
     "@mui/material": "^5.6.0",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
+    "highlight.js": "^11.5.1",
     "jss": "^10.9.0",
     "juice": "^8.0.0",
     "lodash": "^4.17.21",

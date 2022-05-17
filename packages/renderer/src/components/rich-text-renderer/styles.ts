@@ -7,5 +7,9 @@ export default (theme: Theme) => ({
     '& img': {
       maxWidth: '100%',
     },
+
+    '& pre': {
+      overflow: 'auto',
+    },
   },
 });
