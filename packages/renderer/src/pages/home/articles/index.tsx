@@ -9,6 +9,7 @@ import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
 import Storage from '@/store';
 import Empty from '@/components/empty';
 import RichTextRenderer from '@/components/rich-text-renderer';
+import { useDebounce } from '@/utils/tool';
 import { openWindow } from '@/utils/window';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import SelectableList from './selectable-article-list';
@@ -22,6 +23,8 @@ const Articles: React.FC = (props) => {
   const [articleList, setArticleList] = useState(storage.articles.getArticleList());
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [selectedArticleMarkdown, setSelectedArticleMarkdown] = useState('');
+  const [keyword, setKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const selectedArticleRef = useRef<Article | null>();
 
   storage.articles.watchArticleList((articles) => setArticleList(articles));
@@ -32,6 +35,10 @@ const Articles: React.FC = (props) => {
       setSelectedArticleMarkdown('');
     }
   });
+
+  const debouncedSearch = useRef(
+    useDebounce((value) => setSearchKeyword(value), 500, { leading: false }),
+  );
 
   const onListSelect = (article: Article) => {
     setSelectedArticle(article);
@@ -46,17 +53,27 @@ const Articles: React.FC = (props) => {
     selectedArticleRef.current = selectedArticle;
   }, [selectedArticle]);
 
+  useEffect(() => {
+    debouncedSearch.current?.(keyword);
+  }, [keyword]);
+
   return (
     <div className={classes.articles}>
       <div className="article-list">
         <div className="article-list-header">
-          <TextField size="small" className="search" label="搜索标题" />
+          <TextField
+            size="small"
+            className="search"
+            label="搜索标题"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
           <IconButton className="add-button">
             <FontAwesomeIcon icon={AddIcon} onClick={addArticle} />
           </IconButton>
         </div>
         <SelectableList
-          articleList={articleList}
+          articleList={articleList.filter((item) => item.title.includes(searchKeyword))}
           onSelect={onListSelect}
           selectedArticle={selectedArticle}
         />

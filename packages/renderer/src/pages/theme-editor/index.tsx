@@ -13,6 +13,7 @@ import RichTextRenderer from '@/components/rich-text-renderer';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
+import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import { themes as presetThemes } from '@/consts/presetThemes';
 import exampleMarkdown from '@/consts/exampleMarkdown';
@@ -38,6 +39,7 @@ const Editor: React.FC = (props) => {
       id: newId,
     };
     storage.themes.addTheme(newTheme);
+    changeUrlParams({ id: newId });
     setId(newId);
     themeForm.reset(newTheme);
   };
@@ -70,6 +72,7 @@ const Editor: React.FC = (props) => {
         type: 'warning',
       });
       themeForm.setValue('id', '', { shouldDirty: true });
+      changeUrlParams({});
       setId('');
     }
   });
@@ -91,52 +94,34 @@ const Editor: React.FC = (props) => {
     <AppWrappper noHeight>
       <div className={classes.container}>
         <div className={`editor ${isWindows ? '' : 'app-wrapper-padding'}`}>
-          <div className="editor-line">
-            <Controller
-              name="displayName"
-              defaultValue=""
-              control={themeForm.control}
-              render={({ field }) => (
-                <TextField
-                  label="显示名称"
-                  placeholder="显示名称"
-                  size="small"
-                  className="editor-line-input"
-                  {...field}
-                />
-              )}
-            />
-            <Controller
-              name="name"
-              defaultValue=""
-              control={themeForm.control}
-              render={({ field }) => (
-                <TextField
-                  label="名称"
-                  placeholder="名称"
-                  size="small"
-                  className="editor-line-input"
-                  {...field}
-                />
-              )}
-            />
-          </div>
-          <div className="editor-line">
-            <Controller
-              name="description"
-              defaultValue=""
-              control={themeForm.control}
-              render={({ field }) => (
-                <TextField
-                  label="简介"
-                  placeholder="请输入样式简介或备注"
-                  size="small"
-                  className="editor-line-input"
-                  {...field}
-                />
-              )}
-            />
-          </div>
+          <Controller
+            name="name"
+            defaultValue=""
+            control={themeForm.control}
+            render={({ field }) => (
+              <TextField
+                label="名称"
+                placeholder="名称"
+                size="small"
+                className="editor-input"
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="description"
+            defaultValue=""
+            control={themeForm.control}
+            render={({ field }) => (
+              <TextField
+                label="简介"
+                placeholder="请输入样式简介或备注"
+                size="small"
+                className="editor-input"
+                {...field}
+              />
+            )}
+          />
           <Controller
             name="styleSheet"
             defaultValue=""

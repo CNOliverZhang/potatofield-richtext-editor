@@ -82,7 +82,7 @@ const SelectableArticleList: React.FC<SelectableArticleListProps> = (props) => {
                   </div>
                 </Tooltip>
               </div>
-              <Typography variant="caption" color="textSecondary">
+              <Typography variant="caption" color="textSecondary" className="article-update-time">
                 {moment(item.updateTime).format(
                   moment(item.updateTime).isSame(now, 'day') ? '今天 HH:mm' : 'YYYY 年 MM 月 DD 日',
                 )}

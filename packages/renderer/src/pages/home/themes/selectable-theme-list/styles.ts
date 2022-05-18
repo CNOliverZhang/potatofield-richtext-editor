@@ -72,6 +72,16 @@ export default (theme: Theme) => ({
         },
       },
 
+      '&-type': {
+        display: 'flex',
+        alignItems: 'center',
+
+        '& svg': {
+          marginRight: theme.spacing(0.5),
+          color: theme.palette.text.secondary,
+        },
+      },
+
       '&-intro': {
         overflow: 'hidden',
         textOverflow: 'ellipsis',

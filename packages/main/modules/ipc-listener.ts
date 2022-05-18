@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import { CreateWindowProps, openWindow } from './window';
+import { changeUrlParams, CreateWindowProps, openWindow } from './window';
 
 ipcMain.on('platform', (event) => {
   event.returnValue = process.platform;
@@ -46,4 +46,8 @@ ipcMain.on('selectDirectory', (event) => {
   event.returnValue = dialog.showOpenDialogSync({
     properties: ['openDirectory'],
   });
+});
+
+ipcMain.on('changeUrlParams', (event, paramString) => {
+  changeUrlParams(BrowserWindow.fromWebContents(event.sender) as BrowserWindow, paramString);
 });

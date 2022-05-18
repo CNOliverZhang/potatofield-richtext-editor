@@ -8,6 +8,9 @@ import {
   faFileEdit as EditIcon,
   faCheckCircle as ChooseIcon,
   faCopy as CopyIcon,
+  faGlobe as OnlineIcon,
+  faFile as PresetIcon,
+  faFilePen as CustomIcon,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Dialog from '@/imperative-components/dialog';
@@ -55,8 +58,7 @@ const SelectableThemeList: React.FC<SelectableThemeListProps> = (props) => {
   const copy = (item: Theme) => {
     const newTheme = {
       id: uuid(),
-      name: `${item.name}_copy`,
-      displayName: `${item.displayName}_副本`,
+      name: `${item.name}_副本`,
       styleSheet: item.styleSheet,
       description: item.description,
     };
@@ -78,7 +80,7 @@ const SelectableThemeList: React.FC<SelectableThemeListProps> = (props) => {
               <FontAwesomeIcon icon={ChooseIcon} size="sm" className="theme-title-chosen-icon" />
             )}
             <Typography variant="body1" className="theme-title-text">
-              {item.displayName}
+              {item.name}
             </Typography>
             {defaultTheme.id !== item.id && (
               <Tooltip title="设为默认">
@@ -128,9 +130,16 @@ const SelectableThemeList: React.FC<SelectableThemeListProps> = (props) => {
               </>
             )}
           </div>
-          <Typography variant="caption" color="textSecondary">
-            {item.name}
-          </Typography>
+          <div className="theme-type">
+            {item.type === ThemeType.CUSTOM && <FontAwesomeIcon icon={CustomIcon} size="xs" />}
+            {item.type === ThemeType.PRESET && <FontAwesomeIcon icon={PresetIcon} size="xs" />}
+            {item.type === ThemeType.ONLINE && <FontAwesomeIcon icon={OnlineIcon} size="xs" />}
+            <Typography variant="caption" color="textSecondary">
+              {item.type === ThemeType.CUSTOM && '自定义模板'}
+              {item.type === ThemeType.PRESET && '预置模板'}
+              {item.type === ThemeType.ONLINE && '在线模板'}
+            </Typography>
+          </div>
           <Typography variant="body2" className="theme-intro">
             {item.description}
           </Typography>

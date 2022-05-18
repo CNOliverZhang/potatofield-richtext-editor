@@ -14,22 +14,8 @@ export default (theme: Theme) => ({
       flexDirection: 'column',
       padding: theme.spacing(2),
 
-      '&-line': {
-        display: 'flex',
+      '&-input': {
         marginBottom: theme.spacing(2),
-
-        '&-input': {
-          width: 0,
-          flexGrow: 1,
-
-          '&:not(:first-child)': {
-            marginLeft: theme.spacing(1),
-          },
-
-          '&:not(:last-child)': {
-            marginRight: theme.spacing(1),
-          },
-        },
       },
 
       '&-text-area': {

@@ -16,6 +16,7 @@ import RichTextRenderer from '@/components/rich-text-renderer';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
+import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import Storage from '@/store';
 import styles from './styles';
@@ -48,6 +49,7 @@ const Editor: React.FC = (props) => {
       updateTime: new Date(),
     };
     storage.articles.addArticle(article);
+    changeUrlParams({ id: newId });
     setId(newId);
     articleForm.reset(article);
   };
@@ -96,6 +98,7 @@ const Editor: React.FC = (props) => {
         type: 'warning',
       });
       articleForm.setValue('id', '', { shouldDirty: true });
+      changeUrlParams({});
       setId('');
     }
   });

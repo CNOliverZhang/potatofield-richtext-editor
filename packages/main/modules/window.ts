@@ -8,7 +8,12 @@ const DEFAULT_WINDOW_HEIGHT = 600;
 const BG_COLOR = '#f5f5f5';
 const DARK_MODE_BG_COLOR = '#1d1d1d';
 
-const windowList: { window: BrowserWindow; path: string }[] = [];
+interface WindowInfo {
+  window: BrowserWindow;
+  path: string;
+}
+
+const windowList: WindowInfo[] = [];
 
 export interface CreateWindowProps {
   title: string;
@@ -89,4 +94,12 @@ export const openWindow = (props: CreateWindowProps) => {
     return windowInfo.window;
   }
   return createWindow(props);
+};
+
+// 修改已打开的窗口的 URL 参数
+export const changeUrlParams = (browserWindow: BrowserWindow, paramString: string) => {
+  const window = windowList.find((item) => item.window.id === browserWindow.id);
+  if (window) {
+    window.path = `${window.path.split('?')[0]}${paramString}`;
+  }
 };

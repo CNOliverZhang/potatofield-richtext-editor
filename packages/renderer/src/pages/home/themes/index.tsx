@@ -22,14 +22,25 @@ const Themes: React.FC = (props) => {
   const classes = createUseStyles(styles)({ theme });
   const storage = Storage();
   const [isWindows] = useState(getIsWindows());
-  const [localhemeList, setLocalThemeList] = useState(storage.themes.getThemeList());
+  const [localThemeList, setLocalThemeList] = useState(storage.themes.getThemeList());
   const [onlineThemeList, setOnlineThemeList] = useState<Theme[]>([]);
   const [selectedTheme, setSelectedTheme] = useState<Theme>(presetThemes[0]);
   const [defaultTheme, setDefaultTheme] = useState<Theme>(presetThemes[0]);
+  const localThemeListRef = useRef(localThemeList);
+  const onlineThemeListRef = useRef(onlineThemeList);
   const selectedThemeRef = useRef<Theme>(selectedTheme);
   const defaultThemeRef = useRef<Theme>(defaultTheme);
 
   storage.themes.watchThemeList((themes) => setLocalThemeList(themes));
+
+  // 默认主题变更同步到 state
+  storage.themes.watchDefaultThemeId((themeId) =>
+    setDefaultTheme(
+      [...presetThemes, ...localThemeListRef.current, ...onlineThemeListRef.current].find(
+        (item) => item.id === themeId,
+      ) || presetThemes[0],
+    ),
+  );
 
   const onListSelect = (item: Theme) => {
     setSelectedTheme(item);
@@ -39,21 +50,23 @@ const Themes: React.FC = (props) => {
     openWindow({ title: '主题编辑器', path: '/theme-editor', width: 1200, height: 800 });
   };
 
-  // 获取到在线主题或删除本地主题时，可能需要重置已选中主题和默认主题
+  // 获取到在线主题或变更本地主题时，需要重置已选中主题和默认主题
   useEffect(() => {
-    const selectedThemeId = selectedThemeRef.current.id;
+    // 如果默认主题被删除了，第一个内置主题设为默认
     const defaultThemeId = storage.themes.getDefaultThemeId();
     const newDefaultThemeId =
-      [...presetThemes, ...localhemeList, ...onlineThemeList].find(
+      [...presetThemes, ...localThemeList, ...onlineThemeList].find(
         (item) => item.id === defaultThemeId,
       ) || presetThemes[0];
     setDefaultTheme(newDefaultThemeId);
+    // 如果被选中的主题被删除了，自动选中默认主题
+    const selectedThemeId = selectedThemeRef.current.id;
     const newSelectedTheme =
-      [...presetThemes, ...localhemeList, ...onlineThemeList].find(
+      [...presetThemes, ...localThemeList, ...onlineThemeList].find(
         (item) => item.id === selectedThemeId,
-      ) || presetThemes[0];
+      ) || newDefaultThemeId;
     setSelectedTheme(newSelectedTheme);
-  }, [localhemeList, onlineThemeList]);
+  }, [localThemeList, onlineThemeList]);
 
   useEffect(() => {
     selectedThemeRef.current = selectedTheme;
@@ -86,7 +99,7 @@ const Themes: React.FC = (props) => {
         <SelectableList
           themeList={[
             ...presetThemes.map((item) => ({ type: ThemeType.PRESET, ...item })),
-            ...localhemeList.map((item) => ({ type: ThemeType.CUSTOM, ...item })),
+            ...localThemeList.map((item) => ({ type: ThemeType.CUSTOM, ...item })),
             ...onlineThemeList.map((item) => ({ type: ThemeType.ONLINE, ...item })),
           ]}
           onSelect={onListSelect}
@@ -97,7 +110,7 @@ const Themes: React.FC = (props) => {
       <div className="theme-preview">
         <div className={`theme-preview-title ${isWindows ? 'app-wrapper-padding' : ''}`}>
           <Typography variant="h4" className="article-preview-title-text">
-            {selectedTheme.displayName}
+            {selectedTheme.name}
           </Typography>
         </div>
         <div className="theme-preview-content">

@@ -52,6 +52,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/require-default-props': 'off',
     'react/no-danger': 'off',
+    'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
     'import/no-dynamic-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],

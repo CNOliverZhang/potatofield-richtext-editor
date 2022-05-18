@@ -1,8 +1,7 @@
 export const themes = [
   {
     id: 'default',
-    name: 'default',
-    displayName: '默认主题',
+    name: '默认主题',
     description: '内置默认主题。',
     styleSheet: ``,
   },

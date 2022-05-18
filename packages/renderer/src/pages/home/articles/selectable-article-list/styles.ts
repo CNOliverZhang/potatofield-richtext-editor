@@ -63,6 +63,10 @@ export default (theme: Theme) => ({
         },
       },
 
+      '&-update-time': {
+        display: 'block',
+      },
+
       '&-intro': {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
