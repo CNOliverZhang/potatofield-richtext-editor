@@ -14,6 +14,7 @@ import styles from './styles';
 interface RichTextRendererProps {
   elementId: string;
   markdown: string;
+  styleSheet?: string;
 }
 
 const hljsStyleSheetFiles = import.meta.globEager('/src/consts/hljs/*.css', {
@@ -71,14 +72,14 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   useEffect(() => {
     debouncedRender.current?.(
       props.markdown,
-      `${styleSheet}\n${
+      `${props.styleSheet || styleSheet}\n${
         (
           hljsThemes.find((item) => item.name === hljsTheme) ||
           hljsThemes.find((item) => item.name === 'default')
         )?.styleSheet
       }`,
     );
-  }, [props.markdown, styleSheet, hljsTheme]);
+  }, [props.markdown, styleSheet, hljsTheme, props.styleSheet]);
 
   useEffect(() => {
     const defaultThemeId = storage.themes.getDefaultThemeId();

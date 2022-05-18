@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { createUseStyles } from 'react-jss';
-import { Typography, useTheme } from '@mui/material';
+import { Tooltip, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrashCan as DeleteIcon,
@@ -61,18 +61,26 @@ const SelectableArticleList: React.FC<SelectableArticleListProps> = (props) => {
                 <Typography variant="body1" className="article-title-text">
                   {item.title}
                 </Typography>
-                <FontAwesomeIcon
-                  icon={EditIcon}
-                  size="sm"
-                  className="article-title-action"
-                  onClick={() => edit(item.id)}
-                />
-                <FontAwesomeIcon
-                  icon={DeleteIcon}
-                  size="sm"
-                  className="article-title-action delete"
-                  onClick={() => remove(item.id)}
-                />
+                <Tooltip title="编辑">
+                  <div className="article-title-action">
+                    <FontAwesomeIcon
+                      icon={EditIcon}
+                      size="sm"
+                      className="article-title-action-inner"
+                      onClick={() => edit(item.id)}
+                    />
+                  </div>
+                </Tooltip>
+                <Tooltip title="删除">
+                  <div className="article-title-action">
+                    <FontAwesomeIcon
+                      icon={DeleteIcon}
+                      size="sm"
+                      className="article-title-action-inner delete"
+                      onClick={() => remove(item.id)}
+                    />
+                  </div>
+                </Tooltip>
               </div>
               <Typography variant="caption" color="textSecondary">
                 {moment(item.updateTime).format(

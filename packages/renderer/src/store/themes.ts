@@ -31,9 +31,9 @@ const themes = (store: Store) => {
     }
   };
 
-  const watchThemeList = (callback: (themeList: Theme[]) => void) => {
+  const watchThemeList = (callback: (themeList: Theme[], oldThemeList: Theme[]) => void) => {
     store.onDidChange('themeList', (newValue, oldValue) => {
-      callback(newValue as Theme[]);
+      callback(newValue as Theme[], oldValue as Theme[]);
     });
   };
 

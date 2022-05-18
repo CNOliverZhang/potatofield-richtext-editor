@@ -15,6 +15,7 @@ import { openWindow } from '@/utils/window';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 import Articles from './articles';
+import Themes from './themes';
 
 const Home: React.FC = (props) => {
   const theme = useTheme();
@@ -60,7 +61,7 @@ const Home: React.FC = (props) => {
             </IconButton>
           </div>
         </div>
-        <div className="content">{currentTab === 'articles' && <Articles />}</div>
+        <div className="content">{currentTab === 'articles' ? <Articles /> : <Themes />}</div>
       </div>
     </AppWrappper>
   );

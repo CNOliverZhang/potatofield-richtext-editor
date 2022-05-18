@@ -14,10 +14,42 @@ export default (theme: Theme) => ({
       flexDirection: 'column',
       padding: theme.spacing(2),
 
-      '& .vditor': {
+      '&-line': {
+        display: 'flex',
+        marginBottom: theme.spacing(2),
+
+        '&-input': {
+          width: 0,
+          flexGrow: 1,
+
+          '&:not(:first-child)': {
+            marginLeft: theme.spacing(1),
+          },
+
+          '&:not(:last-child)': {
+            marginRight: theme.spacing(1),
+          },
+        },
+      },
+
+      '&-text-area': {
+        width: '100%',
         height: 0,
         flexGrow: 1,
-        marginTop: theme.spacing(2),
+
+        '& .MuiOutlinedInput-root': {
+          width: '100%',
+          height: '100%',
+          padding: 0,
+
+          '& textarea': {
+            width: '100%',
+            height: '100%',
+            overflow: 'auto',
+            padding: theme.spacing(2),
+            boxSizing: 'border-box',
+          },
+        },
       },
 
       '&.app-wrapper-padding': {
@@ -77,12 +109,12 @@ export default (theme: Theme) => ({
           flexGrow: 1,
           color: theme.palette.common.white,
 
-          '&:not(:last-child)': {
-            marginRight: theme.spacing(1),
-          },
-
           '&:not(:first-child)': {
             marginLeft: theme.spacing(1),
+          },
+
+          '&:not(:last-child)': {
+            marginRight: theme.spacing(1),
           },
         },
       },

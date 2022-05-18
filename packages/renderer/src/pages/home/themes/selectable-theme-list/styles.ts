@@ -1,7 +1,7 @@
 import { alpha, Theme } from '@mui/material';
 
 export default (theme: Theme) => ({
-  selectableArticleList: {
+  selectableThemeList: {
     height: 0,
     flexGrow: 1,
     paddingTop: 0,
@@ -19,7 +19,7 @@ export default (theme: Theme) => ({
       display: 'none',
     },
 
-    '& .article': {
+    '& .theme': {
       borderRadius: theme.shape.borderRadius,
       padding: theme.spacing(1),
 
@@ -34,6 +34,11 @@ export default (theme: Theme) => ({
       '&-title': {
         display: 'flex',
         alignItems: 'center',
+
+        '&-chosen-icon': {
+          marginRight: theme.spacing(1),
+          color: theme.palette.success.main,
+        },
 
         '&-text': {
           flexGrow: 1,
@@ -58,6 +63,10 @@ export default (theme: Theme) => ({
 
             '&.delete:hover': {
               color: theme.palette.error.main,
+            },
+
+            '&.choose:hover': {
+              color: theme.palette.success.main,
             },
           },
         },
