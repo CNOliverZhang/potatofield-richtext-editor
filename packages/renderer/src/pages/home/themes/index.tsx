@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import path from 'path';
+import hljs from 'highlight.js';
+import juice from 'juice';
+import prettier from 'prettier';
+import parser from 'prettier/parser-postcss';
 import { createUseStyles } from 'react-jss';
-import { IconButton, TextField, Typography, useTheme } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus as AddIcon } from '@fortawesome/free-solid-svg-icons';
+import { Button, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 
 import Storage from '@/store';
 import RichTextRenderer from '@/components/rich-text-renderer';
@@ -17,15 +20,26 @@ import styles from './styles';
 import SelectableList from './selectable-theme-list';
 import { ThemeType } from './types';
 
+const hljsStyleSheetFiles = import.meta.globEager('/src/consts/hljs/*.css', {
+  assert: { type: 'raw' },
+});
+const hljsThemes = Object.keys(hljsStyleSheetFiles).map((filePath) => ({
+  name: filePath.split(path.sep).pop()?.split('.')[0],
+  styleSheet: hljsStyleSheetFiles[filePath],
+}));
+
 const Themes: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const storage = Storage();
   const [isWindows] = useState(getIsWindows());
+  const [currentTab, setCurrentTab] = useState('general');
   const [localThemeList, setLocalThemeList] = useState(storage.themes.getThemeList());
   const [onlineThemeList, setOnlineThemeList] = useState<Theme[]>([]);
   const [selectedTheme, setSelectedTheme] = useState<Theme>(presetThemes[0]);
   const [defaultTheme, setDefaultTheme] = useState<Theme>(presetThemes[0]);
+  const [hljsTheme, setHljsTheme] = useState(storage.themes.getDefaultHljsTheme() || 'default');
+  const [hljsPreview, setHljsPreview] = useState('');
   const localThemeListRef = useRef(localThemeList);
   const onlineThemeListRef = useRef(onlineThemeList);
   const selectedThemeRef = useRef<Theme>(selectedTheme);
@@ -77,6 +91,23 @@ const Themes: React.FC = (props) => {
   }, [defaultTheme]);
 
   useEffect(() => {
+    storage.themes.setDefaultHljsTheme(hljsTheme);
+    const css = String(
+      (
+        hljsThemes.find((item) => item.name === hljsTheme) ||
+        hljsThemes.find((item) => item.name === 'default')
+      )?.styleSheet,
+    );
+    const parsedCss = prettier.format(`${css}`, { parser: 'css', plugins: [parser] });
+    const html = hljs
+      .highlight(parsedCss, { language: 'css' })
+      .value.replaceAll('\n', '<br />')
+      .replaceAll('  ', '&nbsp;&nbsp;');
+    const styledHtml = juice.inlineContent(`<pre class="hljs"><code>${html}</code></pre>`, css);
+    setHljsPreview(styledHtml);
+  }, [hljsTheme]);
+
+  useEffect(() => {
     axios
       .get(GET_THEME_LIST)
       .then((res) => {
@@ -90,22 +121,60 @@ const Themes: React.FC = (props) => {
   return (
     <div className={classes.themes}>
       <div className="theme-list">
-        <div className="theme-list-header">
-          <TextField size="small" className="search" label="搜索名称" />
-          <IconButton className="add-button">
-            <FontAwesomeIcon icon={AddIcon} onClick={addTheme} />
-          </IconButton>
+        <div className="theme-list-tab">
+          <div
+            className={`theme-list-tab-item ${currentTab === 'general' ? 'active' : ''}`}
+            onClick={() => setCurrentTab('general')}
+          >
+            整体样式
+          </div>
+          <div
+            className={`theme-list-tab-item ${currentTab === 'code' ? 'active' : ''}`}
+            onClick={() => setCurrentTab('code')}
+          >
+            代码样式
+          </div>
         </div>
-        <SelectableList
-          themeList={[
-            ...presetThemes.map((item) => ({ type: ThemeType.PRESET, ...item })),
-            ...localThemeList.map((item) => ({ type: ThemeType.CUSTOM, ...item })),
-            ...onlineThemeList.map((item) => ({ type: ThemeType.ONLINE, ...item })),
-          ]}
-          onSelect={onListSelect}
-          selectedTheme={selectedTheme}
-          defaultTheme={defaultTheme}
-        />
+        {currentTab === 'general' ? (
+          <>
+            <SelectableList
+              themeList={[
+                ...presetThemes.map((item) => ({ type: ThemeType.PRESET, ...item })),
+                ...localThemeList.map((item) => ({ type: ThemeType.CUSTOM, ...item })),
+                ...onlineThemeList.map((item) => ({ type: ThemeType.ONLINE, ...item })),
+              ]}
+              onSelect={onListSelect}
+              selectedTheme={selectedTheme}
+              defaultTheme={defaultTheme}
+            />
+            <div className="add-theme">
+              <Button color="primary" variant="contained" onClick={addTheme} fullWidth>
+                添加主题
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="code-theme">
+            <TextField
+              size="small"
+              label="选择样式"
+              select
+              fullWidth
+              value={hljsTheme}
+              onChange={(e) => setHljsTheme(e.target.value)}
+            >
+              {Object.keys(hljsStyleSheetFiles).map((filePath) => {
+                const themeName = filePath.split(path.sep).pop()?.split('.')[0];
+                return (
+                  <MenuItem key={themeName} value={themeName}>
+                    {themeName}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <div className="code-theme-preview" dangerouslySetInnerHTML={{ __html: hljsPreview }} />
+          </div>
+        )}
       </div>
       <div className="theme-preview">
         <div className={`theme-preview-title ${isWindows ? 'app-wrapper-padding' : ''}`}>

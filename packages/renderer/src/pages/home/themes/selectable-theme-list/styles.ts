@@ -4,7 +4,7 @@ export default (theme: Theme) => ({
   selectableThemeList: {
     height: 0,
     flexGrow: 1,
-    paddingTop: 0,
+    paddingBottom: 0,
     padding: theme.spacing(2),
     overflowY: 'auto',
 

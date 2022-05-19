@@ -12,21 +12,62 @@ export default (theme: Theme) => ({
       display: 'flex',
       flexDirection: 'column',
 
-      '&-header': {
+      '&-tab': {
+        width: '100%',
+        height: 60,
         display: 'flex',
-        padding: theme.spacing(2),
-        alignItems: 'center',
 
-        '& .search': {
-          marginRight: theme.spacing(1),
+        '&-item': {
+          width: 0,
+          height: '100%',
           flexGrow: 1,
-        },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: '0.2s',
+          cursor: 'pointer',
+          userSelect: 'none',
+          borderBottom: '4px solid transparent',
 
-        '& .add-button': {
-          width: 40,
-          height: 40,
-          borderRadius: theme.shape.borderRadius,
+          '&.active': {
+            borderBottomColor: theme.palette.primary.main,
+          },
+        },
+      },
+
+      '& .add-theme': {
+        width: '100%',
+        padding: theme.spacing(2),
+        boxSizing: 'border-box',
+      },
+
+      '& .code-theme': {
+        height: 0,
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: theme.spacing(2),
+
+        '&-preview': {
+          width: '100%',
+          height: 0,
+          flexGrow: 1,
+          overflow: 'hidden',
+          marginTop: theme.spacing(2),
           backgroundColor: theme.palette.background.default,
+          borderRadius: theme.shape.borderRadius,
+
+          '& pre': {
+            margin: 0,
+            width: '100%',
+            height: '100%',
+            padding: theme.spacing(2),
+            overflow: 'auto',
+
+            '&::-webkit-scrollbar': {
+              width: 0,
+            },
+          },
         },
       },
     },
