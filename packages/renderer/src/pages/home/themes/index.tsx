@@ -24,7 +24,7 @@ const hljsStyleSheetFiles = import.meta.globEager('/src/consts/hljs/*.css', {
   assert: { type: 'raw' },
 });
 const hljsThemes = Object.keys(hljsStyleSheetFiles).map((filePath) => ({
-  name: filePath.split(path.sep).pop()?.split('.')[0],
+  name: filePath.split('/').pop()?.split('.')[0],
   styleSheet: hljsStyleSheetFiles[filePath],
 }));
 
@@ -164,7 +164,7 @@ const Themes: React.FC = (props) => {
               onChange={(e) => setHljsTheme(e.target.value)}
             >
               {Object.keys(hljsStyleSheetFiles).map((filePath) => {
-                const themeName = filePath.split(path.sep).pop()?.split('.')[0];
+                const themeName = filePath.split('/').pop()?.split('.')[0];
                 return (
                   <MenuItem key={themeName} value={themeName}>
                     {themeName}

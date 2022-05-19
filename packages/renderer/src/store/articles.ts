@@ -31,9 +31,11 @@ const articles = (store: Store) => {
     }
   };
 
-  const watchArticleList = (callback: (articleList: Article[]) => void) => {
+  const watchArticleList = (
+    callback: (articleList: Article[], oldArticleList: Article[]) => void,
+  ) => {
     store.onDidChange('articleList', (newValue, oldValue) => {
-      callback(newValue as Article[]);
+      callback(newValue as Article[], oldValue as Article[]);
     });
   };
 

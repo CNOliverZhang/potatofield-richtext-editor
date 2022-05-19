@@ -21,7 +21,7 @@ const hljsStyleSheetFiles = import.meta.globEager('/src/consts/hljs/*.css', {
   assert: { type: 'raw' },
 });
 const hljsThemes = Object.keys(hljsStyleSheetFiles).map((filePath) => ({
-  name: filePath.split(path.sep).pop()?.split('.')[0],
+  name: filePath.split('/').pop()?.split('.')[0],
   styleSheet: hljsStyleSheetFiles[filePath],
 }));
 

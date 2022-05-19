@@ -45,9 +45,9 @@ const themes = (store: Store) => {
     return store.get('defaultThemeId') as string;
   };
 
-  const watchDefaultThemeId = (callback: (themeId: string) => void) => {
+  const watchDefaultThemeId = (callback: (themeId: string, oldThemeId: string) => void) => {
     store.onDidChange('defaultThemeId', (newValue, oldValue) => {
-      callback(newValue as string);
+      callback(newValue as string, oldValue as string);
     });
   };
 
@@ -59,9 +59,9 @@ const themes = (store: Store) => {
     return store.get('defaultHljsTheme') as string;
   };
 
-  const watchDefaultHljsTheme = (callback: (theme: string) => void) => {
+  const watchDefaultHljsTheme = (callback: (theme: string, oldTheme: string) => void) => {
     store.onDidChange('defaultHljsTheme', (newValue, oldValue) => {
-      callback(newValue as string);
+      callback(newValue as string, oldValue as string);
     });
   };
 

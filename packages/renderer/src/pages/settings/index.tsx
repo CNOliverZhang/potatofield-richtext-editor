@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material';
 
 import AppWrappper from '@/components/app-wrappper';
 import Custom from './custom';
+import Upload from './upload';
 import styles from './styles';
 
 const Settings: React.FC = (props) => {
@@ -28,7 +29,7 @@ const Settings: React.FC = (props) => {
             界面个性化设置
           </div>
         </div>
-        <div className="content">{currentTab === 'custom' && <Custom />}</div>
+        <div className="content">{currentTab === 'custom' ? <Custom /> : <Upload />}</div>
       </div>
     </AppWrappper>
   );
