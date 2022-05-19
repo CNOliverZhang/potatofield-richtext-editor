@@ -1,0 +1,25 @@
+diff --git a/node_modules/conf/dist/source/index.js b/node_modules/conf/dist/source/index.js
+index bf6ff20..d6ea171 100644
+--- a/node_modules/conf/dist/source/index.js
++++ b/node_modules/conf/dist/source/index.js
+@@ -391,17 +391,9 @@ class Conf {
+         if (!fs.existsSync(this.path)) {
+             this._write(createPlainObject());
+         }
+-        if (process.platform === 'win32') {
+-            fs.watch(this.path, { persistent: false }, debounceFn(() => {
+-                // On Linux and Windows, writing to the config file emits a `rename` event, so we skip checking the event type.
+-                this.events.emit('change');
+-            }, { wait: 100 }));
+-        }
+-        else {
+-            fs.watchFile(this.path, { persistent: false }, debounceFn(() => {
+-                this.events.emit('change');
+-            }, { wait: 5000 }));
+-        }
++        fs.watch(this.path, { persistent: false }, debounceFn(() => {
++            this.events.emit('change');
++        }, { wait: 100 }));
+     }
+     _migrate(migrations, versionToMigrate) {
+         let previousMigratedVersion = this._get(MIGRATION_KEY, '0.0.0');

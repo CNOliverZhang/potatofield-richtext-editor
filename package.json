@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "dist/main/index.cjs",
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "node scripts/watch.mjs",
     "build": "tsc --noEmit -p packages/renderer/tsconfig.json && node scripts/build.mjs && electron-builder"
   },
@@ -31,6 +32,7 @@
     "juice": "^8.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
+    "patch-package": "^6.4.7",
     "react": "^17.0.2",
     "react-hook-form": "^7.30.0",
     "react-jss": "^10.9.0",
