@@ -60,9 +60,9 @@ export const createWindow = (props: CreateWindowProps) => {
     backgroundColor,
   });
   if (app.isPackaged) {
-    window.loadFile(join(__dirname, '../renderer/index.html') + path);
+    window.loadFile(join(__dirname, '../renderer/index.html#') + path);
   } else {
-    const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`;
+    const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}#`;
     window.loadURL(url + path);
     window.webContents.openDevTools({ mode: 'detach' });
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import { ThemeProvider } from './contexts/theme';
 import rootRoute from './routes';
@@ -9,13 +9,13 @@ import './vditor.css';
 
 ReactDOM.render(
   <ThemeProvider>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {rootRoute.map((route) => (
           <Route key={route.path} {...route} />
         ))}
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </ThemeProvider>,
   document.getElementById('root'),
 );

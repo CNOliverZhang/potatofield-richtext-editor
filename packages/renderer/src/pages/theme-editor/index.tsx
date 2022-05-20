@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
@@ -27,7 +26,9 @@ const Editor: React.FC = (props) => {
   const { darkMode } = useThemeContext();
 
   const [isWindows] = useState(getIsWindows());
-  const [id, setId] = useState(new URLSearchParams(useLocation().search).get('id'));
+  const [id, setId] = useState(
+    new URLSearchParams(window.location.hash.split('?').pop()).get('id'),
+  );
   const idRef = useRef(id);
 
   const themeForm = useForm<Theme>();
