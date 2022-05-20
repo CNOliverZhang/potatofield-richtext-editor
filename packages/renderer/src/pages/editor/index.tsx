@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { ipcRenderer } from 'electron';
 import { useLocation } from 'react-router';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
@@ -15,6 +14,8 @@ import AppWrappper from '@/components/app-wrappper';
 import RichTextRenderer from '@/components/rich-text-renderer';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
+import Loading from '@/imperative-components/loading';
+import Upload from '@/utils/upload';
 import { closeWindow } from '@/utils/window';
 import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
@@ -32,8 +33,28 @@ const Editor: React.FC = (props) => {
   const [editor, setEditor] = useState<Vditor>();
   const [markdown, setMarkdown] = useState('');
   const idRef = useRef(id);
+  const editorRef = useRef(editor);
 
   const articleForm = useForm<Article>();
+
+  const uploadHandler = async (files: File[]) => {
+    const uploadFunction = Upload[storage.settings.getUploadTarget()].upload;
+    if (editorRef.current) {
+      const loading = new Loading();
+      try {
+        const url = await uploadFunction(files[0]);
+        editorRef.current.insertValue(`![图片](${url})`);
+      } catch (err) {
+        new Dialog({
+          title: '上传失败',
+          content: (err as Error).message,
+          showCancel: false,
+        });
+      }
+      loading.close();
+    }
+    return null;
+  };
 
   const watchEditorContentChange = (value: string) => {
     articleForm.setValue('content', value, { shouldDirty: true });
@@ -126,12 +147,12 @@ const Editor: React.FC = (props) => {
         },
       },
       toolbar: [
-        'preview',
         'edit-mode',
         'content-theme',
         'code-theme',
         'undo',
         'redo',
+        'upload',
         '|',
         'emoji',
         'headings',
@@ -155,6 +176,7 @@ const Editor: React.FC = (props) => {
         'insert-after',
       ],
       input: watchEditorContentChange,
+      upload: { handler: uploadHandler },
       toolbarConfig: {
         pin: false,
       },
@@ -173,6 +195,10 @@ const Editor: React.FC = (props) => {
   useEffect(() => {
     idRef.current = id;
   }, [id]);
+
+  useEffect(() => {
+    editorRef.current = editor;
+  }, [editor]);
 
   return (
     <AppWrappper noHeight>

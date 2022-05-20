@@ -43,7 +43,7 @@ const UploadSettings: React.FC = (props) => {
       >
         {Object.keys(Upload).map((item) => (
           <MenuItem key={item} value={item}>
-            {item}
+            {Upload[item].name}
           </MenuItem>
         ))}
       </TextField>
@@ -54,7 +54,14 @@ const UploadSettings: React.FC = (props) => {
           defaultValue=""
           control={form.control}
           render={({ field }) => (
-            <TextField label={fieldName} className="input" size="small" fullWidth {...field} />
+            <TextField
+              label={fieldName}
+              placeholder={`请输入${fieldName}`}
+              className="input"
+              size="small"
+              fullWidth
+              {...field}
+            />
           )}
         />
       ))}
@@ -66,12 +73,12 @@ const UploadSettings: React.FC = (props) => {
         disabled={
           !form.formState.isDirty ||
           !Upload[uploadTarget].fields.reduce(
-            (prev: boolean, cur: string) => form.watch(cur) && prev,
+            (prev: boolean, cur: string) => Boolean(form.watch(cur)) && prev,
             true,
           )
         }
       >
-        保存配置
+        {!form.formState.isDirty ? '配置已保存' : '保存配置'}
       </Button>
     </div>
   );
