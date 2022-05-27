@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
+import Vditor from 'vditor';
+import html2canvas from 'html2canvas';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import { Button, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan as DeleteIcon, faCopy as CopyIcon } from '@fortawesome/free-solid-svg-icons';
-import Vditor from 'vditor';
 
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
@@ -111,6 +112,24 @@ const Editor: React.FC = (props) => {
     document.execCommand('copy');
     window.getSelection()?.removeAllRanges();
     new Message({ type: 'success', content: '复制成功' });
+  };
+
+  const saveAsImage = () => {
+    const element = document.getElementById('rich-text-renderer') as HTMLElement;
+    const loading = new Loading();
+    html2canvas(element, {
+      allowTaint: true,
+      backgroundColor: theme.palette.background.default,
+    })
+      .then((canvas) => {
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL();
+        a.download = `${articleForm.getValues().title || '无标题'}.png`;
+        const event = new MouseEvent('click');
+        a.dispatchEvent(event);
+      })
+      .catch(() => new Message({ type: 'error', content: '保存失败' }))
+      .finally(() => loading.close());
   };
 
   storage.articles.watchArticleList((articleList) => {
@@ -276,6 +295,7 @@ const Editor: React.FC = (props) => {
                 color="primary"
                 variant="contained"
                 className="action-button"
+                onClick={saveAsImage}
                 disabled={!articleForm.watch('content') || !articleForm.watch('title')}
               >
                 导出图片

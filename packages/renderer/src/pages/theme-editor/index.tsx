@@ -14,8 +14,8 @@ import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
 import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
-import { themes as presetThemes } from '@/consts/presetThemes';
-import exampleMarkdown from '@/consts/exampleMarkdown';
+import { themes as presetThemes, styleSheetTemplate } from '@/consts/preset-themes';
+import exampleMarkdown from '@/consts/example-markdown';
 import Storage from '@/store';
 import styles from './styles';
 
@@ -81,9 +81,9 @@ const Editor: React.FC = (props) => {
   useEffect(() => {
     if (idRef.current) {
       const targetTheme = storage.themes.getThemeList().find((item) => item.id === idRef.current);
-      themeForm.reset(targetTheme || { styleSheet: presetThemes[0].styleSheet });
+      themeForm.reset(targetTheme || { styleSheet: styleSheetTemplate });
     } else {
-      themeForm.reset({ styleSheet: presetThemes[0].styleSheet });
+      themeForm.reset({ styleSheet: styleSheetTemplate });
     }
   }, []);
 

@@ -10,8 +10,8 @@ import { Button, MenuItem, TextField, Typography, useTheme } from '@mui/material
 
 import Storage from '@/store';
 import RichTextRenderer from '@/components/rich-text-renderer';
-import exampleMarkdown from '@/consts/exampleMarkdown';
-import { themes as presetThemes } from '@/consts/presetThemes';
+import exampleMarkdown from '@/consts/example-markdown';
+import { themes as presetThemes } from '@/consts/preset-themes';
 import { openWindow } from '@/utils/window';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import { GET_THEME_LIST } from '@/apis';
@@ -103,7 +103,9 @@ const Themes: React.FC = (props) => {
       .highlight(parsedCss, { language: 'css' })
       .value.replaceAll('\n', '<br />')
       .replaceAll('  ', '&nbsp;&nbsp;');
-    const styledHtml = juice.inlineContent(`<pre class="hljs"><code>${html}</code></pre>`, css);
+    const styledHtml = juice.inlineContent(`<pre class="hljs"><code>${html}</code></pre>`, css, {
+      inlinePseudoElements: true,
+    });
     setHljsPreview(styledHtml);
   }, [hljsTheme]);
 

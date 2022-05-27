@@ -8,7 +8,7 @@ import Vditor from 'vditor';
 
 import { useThrottle } from '@/utils/tool';
 import Storage from '@/store';
-import { themes, baseStyleSheet } from '@/consts/presetThemes';
+import { themes, baseStyleSheet } from '@/consts/preset-themes';
 import styles from './styles';
 
 interface RichTextRendererProps {
@@ -44,7 +44,11 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
       div.querySelectorAll('pre code').forEach((el) => {
         hljs.highlightElement(el as HTMLElement);
       });
-      setHtml(juice.inlineContent(div.innerHTML, `${baseStyleSheet}\n${stylesheet}`));
+      setHtml(
+        juice.inlineContent(div.innerHTML, `${baseStyleSheet}\n${stylesheet}`, {
+          inlinePseudoElements: true,
+        }),
+      );
     });
   };
 
