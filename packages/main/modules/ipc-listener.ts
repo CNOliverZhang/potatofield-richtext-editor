@@ -1,53 +1,57 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { App, BrowserWindow, dialog, ipcMain } from 'electron';
 import { changeUrlParams, CreateWindowProps, openWindow } from './window';
 
-ipcMain.on('platform', (event) => {
-  event.returnValue = process.platform;
-});
-
-ipcMain.on('minimize', (event) => {
-  BrowserWindow.fromWebContents(event.sender)?.minimize();
-});
-
-ipcMain.on('maximize', (event) => {
-  const window = BrowserWindow.fromWebContents(event.sender);
-  if (window?.isMaximized()) {
-    window.unmaximize();
-  } else {
-    window?.maximize();
-  }
-});
-
-ipcMain.on('close', (event) => {
-  BrowserWindow.fromWebContents(event.sender)?.destroy();
-});
-
-ipcMain.on('relaunch', () => {
-  app.relaunch();
-  app.exit();
-});
-
-ipcMain.on('open', (event, args: CreateWindowProps) => {
-  openWindow(args);
-});
-
-ipcMain.on('selectFile', (event, args?: SelectFileProps) => {
-  const properties: ('openFile' | 'multiSelections')[] = ['openFile'];
-  if (args?.multiple) {
-    properties.push('multiSelections');
-  }
-  event.returnValue = dialog.showOpenDialogSync({
-    filters: args?.filters,
-    properties,
+export const initIpcListeners = (app: App) => {
+  ipcMain.on('platform', (event) => {
+    event.returnValue = process.platform;
   });
-});
 
-ipcMain.on('selectDirectory', (event) => {
-  event.returnValue = dialog.showOpenDialogSync({
-    properties: ['openDirectory'],
+  ipcMain.on('minimize', (event) => {
+    BrowserWindow.fromWebContents(event.sender)?.minimize();
   });
-});
 
-ipcMain.on('changeUrlParams', (event, paramString) => {
-  changeUrlParams(BrowserWindow.fromWebContents(event.sender) as BrowserWindow, paramString);
-});
+  ipcMain.on('maximize', (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    if (window?.isMaximized()) {
+      window.unmaximize();
+    } else {
+      window?.maximize();
+    }
+  });
+
+  ipcMain.on('close', (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    BrowserWindow.fromWebContents(event.sender)?.destroy();
+  });
+
+  ipcMain.on('relaunch', () => {
+    app.relaunch();
+    app.exit();
+  });
+
+  ipcMain.on('open', (event, args: CreateWindowProps) => {
+    openWindow(args);
+  });
+
+  ipcMain.on('select-file', (event, args?: SelectFileProps) => {
+    const properties: ('openFile' | 'multiSelections')[] = ['openFile'];
+    if (args?.multiple) {
+      properties.push('multiSelections');
+    }
+    event.returnValue = dialog.showOpenDialogSync({
+      filters: args?.filters,
+      properties,
+    });
+  });
+
+  ipcMain.on('select-directory', (event) => {
+    event.returnValue =
+      dialog.showOpenDialogSync({
+        properties: ['openDirectory'],
+      })?.[0] || '';
+  });
+
+  ipcMain.on('change-url-params', (event, paramString) => {
+    changeUrlParams(BrowserWindow.fromWebContents(event.sender) as BrowserWindow, paramString);
+  });
+};

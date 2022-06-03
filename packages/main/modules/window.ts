@@ -2,6 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import storage from '../../renderer/src/store';
 
+let mainWindow: BrowserWindow | null;
+
 const DEFAULT_WINDOW_WIDTH = 900;
 const DEFAULT_WINDOW_HEIGHT = 600;
 
@@ -45,6 +47,7 @@ export const createWindow = (props: CreateWindowProps) => {
       nodeIntegration: true,
       webSecurity: false,
       contextIsolation: false,
+      devTools: !app.isPackaged,
     },
     frame: false,
     closable: false,
@@ -60,7 +63,8 @@ export const createWindow = (props: CreateWindowProps) => {
     backgroundColor,
   });
   if (app.isPackaged) {
-    window.loadFile(join(__dirname, '../renderer/index.html#') + path);
+    window.loadURL(join(__dirname, '../renderer/index.html#') + path);
+    window.webContents.closeDevTools();
   } else {
     const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}#`;
     window.loadURL(url + path);
@@ -94,6 +98,22 @@ export const openWindow = (props: CreateWindowProps) => {
     return windowInfo.window;
   }
   return createWindow(props);
+};
+
+// 打开主窗口
+export const openMainWindow = () => {
+  mainWindow = openWindow({
+    title: '洋芋田富文本编辑器',
+    path: '/',
+    width: 900,
+    height: 600,
+    minWidth: 900,
+    minHeight: 600,
+  });
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  return mainWindow;
 };
 
 // 修改已打开的窗口的 URL 参数

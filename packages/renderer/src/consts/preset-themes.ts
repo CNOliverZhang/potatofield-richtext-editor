@@ -173,7 +173,6 @@ pre:last-child {
 blockquote {
   padding: 15px;
   background: rgba(33, 150, 243, 0.1);
-  margin: 0;
   border-left: 4px #2196f3 solid;
   margin: 15px 0;
 }
@@ -187,10 +186,11 @@ blockquote:last-child {
 }
 
 img {
+  max-width: calc(100% - 20px);
   display: block;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 50%);
-  margin: 15px 0;
+  margin: 15px auto;
 }
 
 img:first-child {
@@ -202,6 +202,7 @@ img:last-child {
 }
 
 .gallery img {
+  max-width: unset;
   border-radius: 0;
   box-shadow: none;
 }
