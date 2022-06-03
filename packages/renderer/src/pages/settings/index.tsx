@@ -26,7 +26,7 @@ const Settings: React.FC = (props) => {
             className={`tab ${currentTab === 'custom' ? 'active' : ''}`}
             onClick={() => setCurrentTab('custom')}
           >
-            界面个性化设置
+            个性化设置
           </div>
         </div>
         <div className="content">{currentTab === 'custom' ? <Custom /> : <Upload />}</div>
