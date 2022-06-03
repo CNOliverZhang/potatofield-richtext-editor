@@ -63,7 +63,7 @@ export const createWindow = (props: CreateWindowProps) => {
     backgroundColor,
   });
   if (app.isPackaged) {
-    window.loadURL(join(__dirname, '../renderer/index.html#') + path);
+    window.loadURL(`file://${join(__dirname, '../renderer/index.html#') + path}`);
     window.webContents.closeDevTools();
   } else {
     const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}#`;
