@@ -69,9 +69,3 @@ body {
   height: 120px;
   animation: beat 1s infinite;
 }
-
-.app-loading-text {
-  font-family: 'Noto Sans SC Thin';
-  font-size: 16px;
-  margin-top: 32px;
-}

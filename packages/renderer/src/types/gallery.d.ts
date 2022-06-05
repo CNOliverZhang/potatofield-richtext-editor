@@ -1,0 +1,3 @@
+interface Gallery {
+  imageList: string[];
+}

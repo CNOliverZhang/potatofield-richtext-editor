@@ -28,6 +28,7 @@ module.exports = {
     Article: true,
     SelectFileProps: true,
     Theme: true,
+    Gallery: true,
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {

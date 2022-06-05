@@ -6,14 +6,14 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import React, { useState, forwardRef, useImperativeHandle, RefObject } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, RefObject, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 
 import { ThemeProvider } from '@/contexts/theme';
 
 interface DialogProps {
   title?: string;
-  content: string | Element;
+  content: string | ReactElement;
   scroll?: 'paper' | 'body';
   fullScreen?: boolean;
   showConfirm?: boolean;

@@ -50,6 +50,7 @@ const UploadSettings: React.FC = (props) => {
       <Typography>上传配置</Typography>
       {Upload[uploadTarget].fields.map((fieldName: string) => (
         <Controller
+          key={fieldName}
           name={fieldName}
           defaultValue=""
           control={form.control}

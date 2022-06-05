@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
 import { createUseStyles } from 'react-jss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,7 @@ import { IconButton, useTheme } from '@mui/material';
 import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
 import { openWindow } from '@/utils/window';
+import { checkForUpdate } from '@/utils/update';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 import Articles from './articles';
@@ -22,6 +23,18 @@ const Home: React.FC = (props) => {
   const classes = createUseStyles(styles)({ theme });
   const [currentTab, setCurrentTab] = useState('articles');
   const [isWindows] = useState(getIsWindows());
+
+  useEffect(() => {
+    checkForUpdate({
+      onUpdateAvailable: (info) => {
+        console.log(info);
+      },
+      onDownloadProgress: (info) => {
+        console.log(info.percent);
+      },
+      onUpdateDownloaded: () => undefined,
+    });
+  }, []);
 
   return (
     <AppWrappper noHeight>

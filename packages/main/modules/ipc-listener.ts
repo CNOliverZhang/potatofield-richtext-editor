@@ -1,4 +1,5 @@
 import { App, BrowserWindow, dialog, ipcMain } from 'electron';
+import { checkForUpdate } from './update';
 import { changeUrlParams, CreateWindowProps, openWindow } from './window';
 
 export const initIpcListeners = (app: App) => {
@@ -53,5 +54,9 @@ export const initIpcListeners = (app: App) => {
 
   ipcMain.on('change-url-params', (event, paramString) => {
     changeUrlParams(BrowserWindow.fromWebContents(event.sender) as BrowserWindow, paramString);
+  });
+
+  ipcMain.on('check-for-update', (event) => {
+    checkForUpdate(event.sender);
   });
 };

@@ -46,7 +46,7 @@ export default (theme: Theme) => ({
         '& .app-bar-button': {
           width: 48,
           height: '100%',
-          transition: '0.3s',
+          transition: '0.2s',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
