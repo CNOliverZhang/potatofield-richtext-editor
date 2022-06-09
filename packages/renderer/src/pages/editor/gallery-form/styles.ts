@@ -84,10 +84,15 @@ export default (theme: Theme) => ({
       },
     },
 
+    '& #image-upload-dragger': {
+      display: 'none',
+    },
+
     '& .image-upload-dragger': {
       width: '100%',
-      height: 120,
+      height: 160,
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: theme.shape.borderRadius,
@@ -95,6 +100,11 @@ export default (theme: Theme) => ({
       background: alpha(theme.palette.primary.main, 0.15),
       cursor: 'pointer',
       transition: '0.2s',
+      color: theme.palette.primary.main,
+
+      '&-icon': {
+        marginBottom: theme.spacing(2),
+      },
 
       '&:hover': {
         background: alpha(theme.palette.primary.main, 0.25),
