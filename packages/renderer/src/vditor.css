@@ -2014,3 +2014,42 @@
 .vditor-sv__marker--strong {
 	font-weight: bold
 }
+
+.gallery-wrapper {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+	font-size: 0;
+}
+
+.gallery {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  font-size: 0;
+  border-radius: 8px;
+  background: #121212;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gallery-image-wrapper {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  scroll-snap-align: start;
+}
+
+.gallery-image-wrapper:not(:first-child) {
+  margin-left: 8px;
+}
+
+.gallery-image-wrapper:not(:last-child) {
+  margin-right: 8px;
+}
+
+.gallery-image {
+  width: 100%;
+}

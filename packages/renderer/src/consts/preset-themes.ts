@@ -201,6 +201,18 @@ img:last-child {
   margin-bottom: 0;
 }
 
+.gallery-wrapper {
+  margin: 15px 0;
+}
+
+.gallery-wrapper:first-child {
+  margin-top: 0;
+}
+
+.gallery-wrapper:last-child {
+  margin-bottom: 0;
+}
+
 .gallery img {
   max-width: unset;
   border-radius: 0;
