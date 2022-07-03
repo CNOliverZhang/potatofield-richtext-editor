@@ -1,3 +1,7 @@
+:root {
+  --scroll-bar-width: 8px;
+}
+
 @font-face {
   font-family: "Noto Sans SC Thin";
   font-style: normal;
@@ -35,14 +39,14 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: var(--scroll-bar-width);
+  height: var(--scroll-bar-width);
   background-color: #e0e0e0;
 }
 
 ::-webkit-scrollbar-track {
-  width: 8px;
-  height: 8px;
+  width: var(--scroll-bar-width);
+  height: var(--scroll-bar-width);
   background-color: #e0e0e0;
 }
 

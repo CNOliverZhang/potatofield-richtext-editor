@@ -41,15 +41,16 @@ h2:last-child {
 }
 
 h3 {
+  color: inherit;
   font-family: initial;
   font-size: 24px;
   font-weight: bold;
   width: fit-content;
   margin: 1em 0;
-  background-size: 100% 1.6em;
+  background-size: 100% 0.6em;
   background-position: bottom;
   background-repeat: no-repeat;
-  background-image: linear-gradient(to bottom, transparent 60%, #2196f3 40%);
+  background-image: linear-gradient(to bottom, #2196f3, #2196f3);
 }
 
 h3:first-child {
@@ -127,10 +128,6 @@ a {
   color: #2196f3;
 }
 
-a::before {
-  content: #;
-}
-
 strong {
   color: #2196f3;
 }
@@ -186,11 +183,8 @@ blockquote:last-child {
 }
 
 img {
-  max-width: calc(100% - 20px);
   display: block;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 50%);
-  margin: 15px auto;
 }
 
 img:first-child {

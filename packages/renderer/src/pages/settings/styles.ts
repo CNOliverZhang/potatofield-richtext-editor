@@ -8,6 +8,7 @@ export default (theme: Theme) => ({
 
     '& .tabs': {
       width: 180,
+      flexShrink: 0,
       height: '100%',
       display: 'flex',
       flexDirection: 'column',

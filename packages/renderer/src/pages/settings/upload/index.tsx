@@ -31,56 +31,58 @@ const UploadSettings: React.FC = (props) => {
 
   return (
     <div className={classes.container}>
-      <Typography>上传目标</Typography>
-      <TextField
-        label="上传目标"
-        size="small"
-        className="input"
-        value={uploadTarget}
-        onChange={(e) => setUploadTarget(e.target.value)}
-        fullWidth
-        select
-      >
-        {Object.keys(Upload).map((item) => (
-          <MenuItem key={item} value={item}>
-            {Upload[item].name}
-          </MenuItem>
+      <div className="form">
+        <Typography>上传目标</Typography>
+        <TextField
+          label="上传目标"
+          size="small"
+          className="input"
+          value={uploadTarget}
+          onChange={(e) => setUploadTarget(e.target.value)}
+          fullWidth
+          select
+        >
+          {Object.keys(Upload).map((item) => (
+            <MenuItem key={item} value={item}>
+              {Upload[item].name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Typography>上传配置</Typography>
+        {Upload[uploadTarget].fields.map((fieldName: string) => (
+          <Controller
+            key={fieldName}
+            name={fieldName}
+            defaultValue=""
+            control={form.control}
+            render={({ field }) => (
+              <TextField
+                label={fieldName}
+                placeholder={`请输入${fieldName}`}
+                className="input"
+                size="small"
+                fullWidth
+                {...field}
+              />
+            )}
+          />
         ))}
-      </TextField>
-      <Typography>上传配置</Typography>
-      {Upload[uploadTarget].fields.map((fieldName: string) => (
-        <Controller
-          key={fieldName}
-          name={fieldName}
-          defaultValue=""
-          control={form.control}
-          render={({ field }) => (
-            <TextField
-              label={fieldName}
-              placeholder={`请输入${fieldName}`}
-              className="input"
-              size="small"
-              fullWidth
-              {...field}
-            />
-          )}
-        />
-      ))}
-      <Button
-        fullWidth
-        variant="contained"
-        color="primary"
-        onClick={saveConfig}
-        disabled={
-          !form.formState.isDirty ||
-          !Upload[uploadTarget].fields.reduce(
-            (prev: boolean, cur: string) => Boolean(form.watch(cur)) && prev,
-            true,
-          )
-        }
-      >
-        {!form.formState.isDirty ? '配置已保存' : '保存配置'}
-      </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={saveConfig}
+          disabled={
+            !form.formState.isDirty ||
+            !Upload[uploadTarget].fields.reduce(
+              (prev: boolean, cur: string) => Boolean(form.watch(cur)) && prev,
+              true,
+            )
+          }
+        >
+          {!form.formState.isDirty ? '配置已保存' : '保存配置'}
+        </Button>
+      </div>
     </div>
   );
 };
