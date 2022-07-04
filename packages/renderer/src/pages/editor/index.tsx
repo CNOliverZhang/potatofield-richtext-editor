@@ -154,17 +154,28 @@ const Editor: React.FC = (props) => {
                 `<div class="gallery-image-wrapper"><img class="gallery-image" src="${image}"></img></div>`,
             )
             .join('')}</div></div>`;
-          // const range = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]?.range;
-          // if (!range) {
-          editorRef?.current?.focus();
-          editorRef?.current?.insertValue('');
-          const range = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]?.range;
-          range?.collapse(false);
-          // }
-          // range?.collapse(false);
+          // 获取编辑器活跃选区
+          let range = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]?.range;
+          const vditorEle = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]
+            ?.element as HTMLElement;
+          const selection = window.getSelection() as Selection;
+          // 当编辑器没有选区或编辑器选取是整个元素时，需要重设选区到文章尾部
+          if (!range || range.commonAncestorContainer.isSameNode(vditorEle)) {
+            range = document.createRange();
+            // 文章没有任何内容时，先创建一个空元素以便创建选区
+            if (!vditorEle?.childElementCount) {
+              editorRef?.current?.focus();
+              editorRef.current?.insertValue('');
+            }
+            range.setEnd(vditorEle.lastElementChild as HTMLElement, 0);
+            range.setStart(vditorEle.lastElementChild as HTMLElement, 0);
+          }
+          // 设定好选区并 paste 把富文本内容贴进去
+          range?.collapse();
+          selection.removeAllRanges();
+          selection.addRange(range);
           clipboard.writeText(htmlString);
-          // console.log(range);
-          console.log(document.execCommand('paste'));
+          document.execCommand('paste');
           clipboard.clear();
           galleryForm.reset({ imageList: [] });
           dialog.close();
