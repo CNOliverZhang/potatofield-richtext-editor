@@ -87,3 +87,6 @@ release
 .DS_Store
 dist-ssr
 *.local
+
+# apple id 配置
+scripts/notarize-config.js

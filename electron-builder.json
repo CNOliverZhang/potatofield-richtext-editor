@@ -25,6 +25,7 @@
     "deleteAppDataOnUninstall": false
   },
   "mac": {
+    "identity": "Shenzhen Potato Field Technology Consulting Co., Ltd (T657YWLL39)",
     "target": ["dmg"],
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
@@ -35,6 +36,7 @@
   "releaseInfo": {
     "releaseNotes": "首个正式发布版本。"
   },
+  "afterSign": "scripts/notarize.js",
   "publish": [
     {
       "provider": "generic",

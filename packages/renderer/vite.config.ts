@@ -87,6 +87,7 @@ export default defineConfig({
     react(),
     resolveElectron({
       'electron-store': 'const Store = require("electron-store"); export default Store;',
+      'cos-nodejs-sdk-v5': 'const Cos = require("cos-nodejs-sdk-v5"); export default Cos;',
     }),
   ],
   base: './',
