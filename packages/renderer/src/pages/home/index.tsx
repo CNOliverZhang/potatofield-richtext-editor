@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ipcRenderer } from 'electron';
+import { ProgressInfo, UpdateInfo } from 'electron-updater';
 import { createUseStyles } from 'react-jss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,12 +7,13 @@ import {
   faBrush as StyleIcon,
   faSliders as SettingsIcon,
 } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, useTheme } from '@mui/material';
+import { IconButton, LinearProgress, Typography, useTheme } from '@mui/material';
 
 import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
+import Dialog from '@/imperative-components/dialog';
 import { openWindow } from '@/utils/window';
-import { checkForUpdate } from '@/utils/update';
+import { checkForUpdate, installUpdate, startUpdate } from '@/utils/update';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 import Articles from './articles';
@@ -25,14 +26,57 @@ const Home: React.FC = (props) => {
   const [isWindows] = useState(getIsWindows());
 
   useEffect(() => {
-    checkForUpdate({
-      onUpdateAvailable: (info) => {
-        console.log(info);
-      },
-      onDownloadProgress: (info) => {
-        console.log(info.percent);
-      },
-      onUpdateDownloaded: () => undefined,
+    checkForUpdate().then((info: UpdateInfo) => {
+      const dialog: Dialog = new Dialog({
+        title: '有新版本',
+        content: (
+          <>
+            <Typography variant="body1" gutterBottom>
+              版本 {info.version} 已发布，是否要下载更新？
+            </Typography>
+            {(info.releaseNotes as string).split('\n').map((note) => (
+              <Typography key={note} variant="body2" color="textSecondary" gutterBottom>
+                {note}
+              </Typography>
+            ))}
+          </>
+        ),
+        closeOnClick: false,
+        onConfirm: () => {
+          dialog.change({
+            title: '正在下载更新',
+            content: <LinearProgress value={0} variant="determinate" />,
+            showCancel: false,
+            showConfirm: false,
+          });
+          startUpdate({
+            onDownloadProgress: (progress: ProgressInfo) => {
+              dialog.change({
+                title: '正在下载更新',
+                content: <LinearProgress value={progress.percent} variant="determinate" />,
+                showCancel: false,
+                showConfirm: false,
+              });
+            },
+          })
+            .then(() => {
+              dialog.change({
+                title: '已准备好安装更新',
+                content: '更新下载完成，已准备好安装更新并重启本软件',
+                showCancel: false,
+                onConfirm: () => installUpdate(),
+              });
+            })
+            .catch(() => {
+              dialog.change({
+                title: '下载更新失败',
+                content: '更新下载失败，请您稍后重试',
+                showCancel: false,
+              });
+            });
+        },
+        onCancel: () => dialog.close(),
+      });
     });
   }, []);
 

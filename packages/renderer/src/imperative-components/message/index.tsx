@@ -1,6 +1,6 @@
 import { Snackbar, Alert } from '@mui/material';
 import React, { useState, forwardRef, useImperativeHandle, RefObject } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import { ThemeProvider } from '@/contexts/theme';
 
@@ -12,6 +12,7 @@ interface MessageProps {
 
 interface MessageComponentProps extends MessageProps {
   container?: HTMLDivElement;
+  root?: ReactDOM.Root;
 }
 
 interface MessageMethods {
@@ -22,7 +23,7 @@ const MessageComponent = forwardRef<MessageMethods, MessageComponentProps>(
   (props: MessageComponentProps, ref) => {
     const [open, setOpen] = useState(true);
 
-    const { type, content, duration, container } = props;
+    const { type, content, duration, container, root } = props;
 
     useImperativeHandle(ref, () => ({
       close: () => {
@@ -34,7 +35,7 @@ const MessageComponent = forwardRef<MessageMethods, MessageComponentProps>(
       setOpen(false);
       setTimeout(() => {
         if (container) {
-          ReactDOM.unmountComponentAtNode(container);
+          root?.unmount();
           if (document.body.contains(container)) {
             document.body.removeChild(container);
           }
@@ -69,25 +70,36 @@ const MessageComponent = forwardRef<MessageMethods, MessageComponentProps>(
 class Message {
   container: HTMLDivElement;
 
+  root: ReactDOM.Root;
+
   component: RefObject<MessageMethods>;
 
   constructor(props: MessageProps | string) {
     this.container = document.createElement('div');
     document.body.appendChild(this.container);
+    this.root = ReactDOM.createRoot(this.container);
     this.component = React.createRef();
     if (typeof props === 'string') {
-      ReactDOM.render(
+      this.root.render(
         <ThemeProvider>
-          <MessageComponent ref={this.component} content={props} container={this.container} />
+          <MessageComponent
+            ref={this.component}
+            content={props}
+            container={this.container}
+            root={this.root}
+          />
         </ThemeProvider>,
-        this.container,
       );
     } else {
-      ReactDOM.render(
+      this.root.render(
         <ThemeProvider>
-          <MessageComponent ref={this.component} container={this.container} {...props} />
+          <MessageComponent
+            ref={this.component}
+            container={this.container}
+            root={this.root}
+            {...props}
+          />
         </ThemeProvider>,
-        this.container,
       );
     }
     return this;
@@ -96,7 +108,7 @@ class Message {
   close(): void {
     this.component?.current?.close();
     setTimeout(() => {
-      ReactDOM.unmountComponentAtNode(this.container);
+      this.root?.unmount();
       if (document.body.contains(this.container)) {
         document.body.removeChild(this.container);
       }

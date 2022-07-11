@@ -68,8 +68,8 @@ const Articles: React.FC = (props) => {
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
-          <IconButton className="add-button">
-            <FontAwesomeIcon icon={AddIcon} onClick={addArticle} />
+          <IconButton onClick={addArticle} className="add-button">
+            <FontAwesomeIcon icon={AddIcon} />
           </IconButton>
         </div>
         <SelectableList

@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import React, { useState, forwardRef, useImperativeHandle, RefObject, ReactElement } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import { ThemeProvider } from '@/contexts/theme';
 
@@ -29,6 +29,7 @@ interface DialogProps {
 
 interface DialogComponentProps extends DialogProps {
   container?: HTMLDivElement;
+  root?: ReactDOM.Root;
 }
 
 interface DialogMethods {
@@ -54,6 +55,7 @@ const DialogComponent = forwardRef<DialogMethods, DialogComponentProps>(
       onCancel: originalOnCancel,
       closeOnClick = true,
       container,
+      root,
     } = props;
 
     useImperativeHandle(ref, () => ({
@@ -70,7 +72,7 @@ const DialogComponent = forwardRef<DialogMethods, DialogComponentProps>(
         setOpen(false);
         setTimeout(() => {
           if (container) {
-            ReactDOM.unmountComponentAtNode(container);
+            root?.unmount();
             if (document.body.contains(container)) {
               document.body.removeChild(container);
             }
@@ -87,7 +89,7 @@ const DialogComponent = forwardRef<DialogMethods, DialogComponentProps>(
         setOpen(false);
         setTimeout(() => {
           if (container) {
-            ReactDOM.unmountComponentAtNode(container);
+            root?.unmount();
             if (document.body.contains(container)) {
               document.body.removeChild(container);
             }
@@ -122,21 +124,24 @@ const DialogComponent = forwardRef<DialogMethods, DialogComponentProps>(
 class Dialog {
   container: HTMLDivElement;
 
+  root: ReactDOM.Root;
+
   component: RefObject<DialogMethods>;
 
   constructor(props: DialogProps) {
     this.container = document.createElement('div');
     document.body.appendChild(this.container);
+    this.root = ReactDOM.createRoot(this.container);
     this.component = React.createRef();
     const componentProps = {
       ...props,
       container: this.container,
+      root: this.root,
     };
-    ReactDOM.render(
+    this.root.render(
       <ThemeProvider>
         <DialogComponent ref={this.component} {...componentProps} />
       </ThemeProvider>,
-      this.container,
     );
     return this;
   }
@@ -145,19 +150,19 @@ class Dialog {
     const componentProps = {
       ...props,
       container: this.container,
+      root: this.root,
     };
-    ReactDOM.render(
+    this.root.render(
       <ThemeProvider>
         <DialogComponent ref={this.component} {...componentProps} />
       </ThemeProvider>,
-      this.container,
     );
   }
 
   close(): void {
     this.component?.current?.close();
     setTimeout(() => {
-      ReactDOM.unmountComponentAtNode(this.container);
+      this.root?.unmount();
       if (document.body.contains(this.container)) {
         document.body.removeChild(this.container);
       }

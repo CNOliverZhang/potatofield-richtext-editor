@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { debounce, DebouncedFunc, DebounceSettings, throttle, ThrottleSettings } from 'lodash';
+import { ipcRenderer } from 'electron';
 
 export const useDebounce = <T extends (...args: any[]) => any>(
   callback: T,
@@ -25,4 +26,8 @@ export const useThrottle = <T extends (...args: any[]) => any>(
     options,
   ]);
   return throttledFunction;
+};
+
+export const getCurrentVersion = () => {
+  return ipcRenderer.sendSync('version');
 };

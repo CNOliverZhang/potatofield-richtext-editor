@@ -12,7 +12,9 @@ const CustomSettings: React.FC = (props) => {
 
   return (
     <div className={classes.container}>
-      <Typography>界面设置</Typography>
+      <Typography variant="h6" gutterBottom>
+        界面设置
+      </Typography>
       <FormControlLabel
         control={<Switch checked={darkMode} onChange={(e, checked) => setDarkMode(checked)} />}
         label="深色模式"

@@ -1,24 +1,44 @@
-import { WebContents } from 'electron';
-import { autoUpdater, ProgressInfo, UpdateInfo } from 'electron-updater';
+import { app, WebContents } from 'electron';
+import Updater, { autoUpdater, ProgressInfo, UpdateInfo, UpdaterSignal } from 'electron-updater';
+
+const updateStatus = {
+  isUpdating: false,
+};
 
 export const checkForUpdate = (updateWindowWebContents: WebContents) => {
   autoUpdater.autoDownload = false;
-  setTimeout(() => {
-    autoUpdater.checkForUpdates();
-  }, 200);
-  autoUpdater.on('update-available', (info: UpdateInfo) => {
-    updateWindowWebContents.send('update-available', info);
+  autoUpdater.checkForUpdates();
+  autoUpdater.once('update-available', (value: UpdateInfo) => {
+    updateWindowWebContents.send('update-available', value);
   });
-  autoUpdater.on('update-not-available', () => {
+  autoUpdater.once('update-not-available', () => {
     updateWindowWebContents.send('update-not-available');
   });
-  autoUpdater.on('download-progress', (progress: ProgressInfo) => {
-    updateWindowWebContents.send('update-download-progress', progress.percent);
+  autoUpdater.once('error', () => {
+    updateWindowWebContents.send('update-check-error');
   });
-  autoUpdater.on('update-downloaded', () => {
-    updateWindowWebContents.send('update-downloaded');
-  });
-  autoUpdater.on('error', () => {
-    updateWindowWebContents.send('update-error');
-  });
+};
+
+export const startUpdate = (updateWindowWebContents: WebContents) => {
+  if (updateStatus.isUpdating) {
+    updateWindowWebContents.send('updating');
+  } else {
+    updateStatus.isUpdating = true;
+    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+      updateWindowWebContents.send('update-download-progress', progress);
+    });
+    autoUpdater.once('update-downloaded', () => {
+      updateWindowWebContents.send('update-downloaded');
+    });
+    autoUpdater.once('error', () => {
+      updateStatus.isUpdating = false;
+      updateWindowWebContents.send('update-download-error');
+    });
+    autoUpdater.downloadUpdate();
+  }
+};
+
+export const installUpdate = () => {
+  autoUpdater.quitAndInstall();
+  app.exit();
 };

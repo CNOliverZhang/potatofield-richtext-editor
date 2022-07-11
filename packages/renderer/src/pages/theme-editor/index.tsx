@@ -6,7 +6,6 @@ import { Button, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan as DeleteIcon } from '@fortawesome/free-solid-svg-icons';
 
-import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
 import RichTextRenderer from '@/components/rich-text-renderer';
 import Message from '@/imperative-components/message';
@@ -14,7 +13,7 @@ import Dialog from '@/imperative-components/dialog';
 import { closeWindow } from '@/utils/window';
 import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
-import { themes as presetThemes, styleSheetTemplate } from '@/consts/preset-themes';
+import { styleSheetTemplate } from '@/consts/preset-themes';
 import exampleMarkdown from '@/consts/example-markdown';
 import Storage from '@/store';
 import styles from './styles';
@@ -23,7 +22,6 @@ const Editor: React.FC = (props) => {
   const storage = Storage();
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
-  const { darkMode } = useThemeContext();
 
   const [isWindows] = useState(getIsWindows());
   const [id, setId] = useState(

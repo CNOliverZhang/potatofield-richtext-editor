@@ -32,7 +32,9 @@ const UploadSettings: React.FC = (props) => {
   return (
     <div className={classes.container}>
       <div className="form">
-        <Typography>上传目标</Typography>
+        <Typography variant="h6" gutterBottom>
+          上传目标
+        </Typography>
         <TextField
           label="上传目标"
           size="small"
@@ -48,7 +50,9 @@ const UploadSettings: React.FC = (props) => {
             </MenuItem>
           ))}
         </TextField>
-        <Typography>上传配置</Typography>
+        <Typography variant="h6" gutterBottom>
+          上传配置
+        </Typography>
         {Upload[uploadTarget].fields.map((fieldName: string) => (
           <Controller
             key={fieldName}

@@ -1,5 +1,5 @@
 import { App, BrowserWindow, dialog, ipcMain } from 'electron';
-import { checkForUpdate } from './update';
+import { checkForUpdate, installUpdate, startUpdate } from './update';
 import { changeUrlParams, CreateWindowProps, openWindow } from './window';
 
 export const initIpcListeners = (app: App) => {
@@ -58,5 +58,17 @@ export const initIpcListeners = (app: App) => {
 
   ipcMain.on('check-for-update', (event) => {
     checkForUpdate(event.sender);
+  });
+
+  ipcMain.on('start-update', (event) => {
+    startUpdate(event.sender);
+  });
+
+  ipcMain.on('install-update', () => {
+    installUpdate();
+  });
+
+  ipcMain.on('version', (event) => {
+    event.returnValue = app.getVersion();
   });
 };

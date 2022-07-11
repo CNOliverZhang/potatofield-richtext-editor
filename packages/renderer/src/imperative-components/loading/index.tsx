@@ -1,6 +1,6 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 import React, { useState, forwardRef, useImperativeHandle, RefObject } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import { ThemeProvider } from '@/contexts/theme';
 
@@ -30,17 +30,19 @@ const LoadingComponent = forwardRef<LoadingMethods>((props, ref) => {
 class Loading {
   container: HTMLDivElement;
 
+  root: ReactDOM.Root;
+
   component: RefObject<LoadingMethods>;
 
   constructor() {
     this.container = document.createElement('div');
     document.body.appendChild(this.container);
+    this.root = ReactDOM.createRoot(this.container);
     this.component = React.createRef();
-    ReactDOM.render(
+    this.root.render(
       <ThemeProvider>
         <LoadingComponent ref={this.component} />
       </ThemeProvider>,
-      this.container,
     );
     return this;
   }
@@ -48,7 +50,7 @@ class Loading {
   close(): void {
     this.component?.current?.close();
     setTimeout(() => {
-      ReactDOM.unmountComponentAtNode(this.container);
+      this.root?.unmount();
       if (document.body.contains(this.container)) {
         document.body.removeChild(this.container);
       }
