@@ -39,6 +39,11 @@ app.on('second-instance', () => {
   openMainWindow();
 });
 
+// 点击任务栏图标，打开主窗口
+app.on('activate', () => {
+  openMainWindow();
+});
+
 // 窗口全部关闭时阻止退出
 app.on('window-all-closed', (e: Event) => {
   e.preventDefault();

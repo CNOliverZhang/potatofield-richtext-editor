@@ -26,7 +26,7 @@
   },
   "mac": {
     "identity": "Shenzhen Potato Field Technology Consulting Co., Ltd (T657YWLL39)",
-    "target": ["dmg"],
+    "target": ["default"],
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "linux": {

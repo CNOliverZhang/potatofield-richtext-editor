@@ -52,7 +52,10 @@ export const initTray = (app: App) => {
     },
     {
       label: '退出',
-      click: () => app.exit(),
+      click: () => {
+        app.exit();
+        process.exit(0);
+      },
     },
   ]);
   tray = new Tray(icon);
