@@ -6,6 +6,7 @@ let mainWindow: BrowserWindow | null;
 
 const DEFAULT_WINDOW_WIDTH = 900;
 const DEFAULT_WINDOW_HEIGHT = 600;
+const WINDOW_CONTEXT_MENU = 0x0116;
 
 const BG_COLOR = '#f5f5f5';
 const DARK_MODE_BG_COLOR = '#1d1d1d';
@@ -71,6 +72,11 @@ export const createWindow = (props: CreateWindowProps) => {
     window.webContents.openDevTools({ mode: 'detach' });
   }
   windowList.push({ window, path: props.path });
+  // 禁用窗口菜单
+  window.hookWindowMessage(WINDOW_CONTEXT_MENU, () => {
+    window.setEnabled(false);
+    window.setEnabled(true);
+  })
   window.on('system-context-menu', (e: Event) => {
     e.preventDefault();
   });
