@@ -53,8 +53,7 @@ export const initTray = (app: App) => {
     {
       label: '退出',
       click: () => {
-        app.exit();
-        process.exit(0);
+        app.quit();
       },
     },
   ]);

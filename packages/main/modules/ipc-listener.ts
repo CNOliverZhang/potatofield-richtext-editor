@@ -22,7 +22,7 @@ export const initIpcListeners = (app: App) => {
 
   ipcMain.on('close', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
-    BrowserWindow.fromWebContents(event.sender)?.destroy();
+    window?.close();
   });
 
   ipcMain.on('relaunch', () => {

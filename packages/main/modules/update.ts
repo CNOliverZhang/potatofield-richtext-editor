@@ -1,12 +1,13 @@
-import { app, WebContents } from 'electron';
-import Updater, { autoUpdater, ProgressInfo, UpdateInfo, UpdaterSignal } from 'electron-updater';
+import { WebContents } from 'electron';
+import { autoUpdater, ProgressInfo, UpdateInfo } from 'electron-updater';
 
 const updateStatus = {
   isUpdating: false,
 };
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 export const checkForUpdate = (updateWindowWebContents: WebContents) => {
-  autoUpdater.autoDownload = false;
   autoUpdater.checkForUpdates();
   autoUpdater.once('update-available', (value: UpdateInfo) => {
     updateWindowWebContents.send('update-available', value);
@@ -40,5 +41,4 @@ export const startUpdate = (updateWindowWebContents: WebContents) => {
 
 export const installUpdate = () => {
   autoUpdater.quitAndInstall();
-  app.exit();
 };

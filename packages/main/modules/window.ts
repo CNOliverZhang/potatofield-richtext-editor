@@ -51,7 +51,6 @@ export const createWindow = (props: CreateWindowProps) => {
       devTools: !app.isPackaged,
     },
     frame: false,
-    closable: false,
     resizable: true,
     width,
     height,
@@ -73,10 +72,10 @@ export const createWindow = (props: CreateWindowProps) => {
   }
   windowList.push({ window, path: props.path });
   // 禁用窗口菜单
-  window.hookWindowMessage(WINDOW_CONTEXT_MENU, () => {
+  window.hookWindowMessage?.(WINDOW_CONTEXT_MENU, () => {
     window.setEnabled(false);
     window.setEnabled(true);
-  })
+  });
   window.on('system-context-menu', (e: Event) => {
     e.preventDefault();
   });

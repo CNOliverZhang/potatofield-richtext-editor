@@ -46,5 +46,7 @@ app.on('activate', () => {
 
 // 窗口全部关闭时阻止退出
 app.on('window-all-closed', (e: Event) => {
-  e.preventDefault();
+  if (process.platform !== 'darwin') {
+    e.preventDefault();
+  }
 });
