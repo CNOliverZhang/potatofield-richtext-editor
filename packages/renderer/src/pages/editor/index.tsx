@@ -107,14 +107,7 @@ const Editor: React.FC = (props) => {
 
   const copy = () => {
     const element = document.getElementById('rich-text-renderer') as HTMLElement;
-    element.focus();
-    window.getSelection()?.removeAllRanges();
-    const range = document.createRange();
-    range.setStartBefore(element.firstChild as Node);
-    range.setEndAfter(element.lastChild as Node);
-    window.getSelection()?.addRange(range);
-    document.execCommand('copy');
-    window.getSelection()?.removeAllRanges();
+    clipboard.writeHTML(element.innerHTML);
     new Message({ type: 'success', content: '复制成功' });
   };
 
