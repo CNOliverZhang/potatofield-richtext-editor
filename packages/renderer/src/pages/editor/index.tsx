@@ -148,12 +148,12 @@ const Editor: React.FC = (props) => {
             content: '必须选择至少一张图片',
           });
         } else {
-          const htmlString = `<div class="gallery-wrapper"><div class="gallery">${imageList
+          const htmlString = `<section class="gallery-wrapper"><section class="gallery">${imageList
             .map(
               (image) =>
-                `<div class="gallery-image-wrapper"><img class="gallery-image" src="${image}"></img></div>`,
+                `<section class="gallery-image-wrapper"><img class="gallery-image" src="${image}"></img></section>`,
             )
-            .join('')}</div></div>`;
+            .join('')}</section></section>`;
           // 获取编辑器活跃选区
           let range = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]?.range;
           const vditorEle = editorRef.current?.vditor?.[editorRef.current?.getCurrentMode()]
