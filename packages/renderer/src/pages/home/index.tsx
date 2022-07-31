@@ -9,6 +9,7 @@ import {
   faFileLines as ArticleIcon,
   faBrush as StyleIcon,
   faSliders as SettingsIcon,
+  faFileCircleQuestion as DocsIcon,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconButton, LinearProgress, Link, Typography, useTheme } from '@mui/material';
 
@@ -23,6 +24,8 @@ import { isWindows as getIsWindows } from '@/utils/platform';
 import styles from './styles';
 import Articles from './articles';
 import Themes from './themes';
+
+const DOCS_URL = 'https://potatofield.cn/richtexteditor/docs'
 
 const Home: React.FC = (props) => {
   const theme = useTheme();
@@ -120,6 +123,10 @@ const Home: React.FC = (props) => {
     axios.post(SEND_USAGE_INFO, { version, platform, identifier });
   }
 
+  const openDocs = () => {
+    window.open(DOCS_URL, '_blank');
+  };
+
   useEffect(() => {
     checkTermsAgreed().then(() => {
       update();
@@ -132,7 +139,13 @@ const Home: React.FC = (props) => {
       <div className={classes.container}>
         <div className="tabs">
           {!isWindows && <div className="app-bar-area" />}
-          <img src={Logo} className={`app-icon ${isWindows ? 'win' : 'mac'}`} />
+          <div className="app-icon" onClick={openDocs}>
+            <img src={Logo} className="app-icon-img" />
+            <div className="app-icon-button">
+              <FontAwesomeIcon icon={DocsIcon} />
+              <Typography variant="caption" className="app-icon-button-text">文档</Typography>
+            </div>
+          </div>
           <div
             className={`tab ${currentTab === 'articles' ? 'active' : ''}`}
             onClick={() => setCurrentTab('articles')}
@@ -144,7 +157,7 @@ const Home: React.FC = (props) => {
             className={`tab ${currentTab === 'styles' ? 'active' : ''}`}
             onClick={() => setCurrentTab('styles')}
           >
-            <FontAwesomeIcon icon={StyleIcon} className="tab-icon" />
+            <FontAwesomeIcon icon={StyleIcon} size="2x" className="tab-icon" />
             样式
           </div>
           <div className="tabs-space" />

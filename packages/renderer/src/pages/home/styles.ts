@@ -24,8 +24,42 @@ export default (theme: Theme) => ({
       '& .app-icon': {
         width: 60,
         height: 60,
-        display: 'block',
         margin: '30px auto',
+        position: 'relative',
+        cursor: 'pointer',
+        '-webkit-app-region': 'no-drag',
+
+        '&-img': {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        },
+
+        '&-button': {
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.common.white,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: 0,
+          transition: '0.3s',
+
+          '&:hover': {
+            opacity: 1,
+          },
+
+          '&-text': {
+            marginTop: theme.spacing(0.5),
+            lineHeight: '1em',
+          },
+        },
       },
 
       '& .tab': {
