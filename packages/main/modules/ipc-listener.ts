@@ -30,6 +30,10 @@ export const initIpcListeners = (app: App) => {
     app.exit();
   });
 
+  ipcMain.on('exit', () => {
+    app.exit();
+  });
+
   ipcMain.on('open', (event, args: CreateWindowProps) => {
     openWindow(args);
   });

@@ -12,7 +12,6 @@ export default (theme: Theme) => ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      '-webkit-app-region': 'drag',
     },
 
     '&::-webkit-scrollbar': {

@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ipcRenderer } from 'electron';
 import { ProgressInfo, UpdateInfo } from 'electron-updater';
 import { createUseStyles } from 'react-jss';
+import { v4 as uuid } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faFileLines as ArticleIcon,
   faBrush as StyleIcon,
   faSliders as SettingsIcon,
 } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, LinearProgress, Typography, useTheme } from '@mui/material';
+import { IconButton, LinearProgress, Link, Typography, useTheme } from '@mui/material';
 
+import Storage from '@/store';
 import Logo from '@/assets/images/global/logo.png';
 import AppWrappper from '@/components/app-wrappper';
 import Dialog from '@/imperative-components/dialog';
+import { SEND_USAGE_INFO } from '@/apis';
 import { openWindow } from '@/utils/window';
 import { checkForUpdate, installUpdate, startUpdate } from '@/utils/update';
 import { isWindows as getIsWindows } from '@/utils/platform';
@@ -22,10 +27,11 @@ import Themes from './themes';
 const Home: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
+  const storage = Storage();
   const [currentTab, setCurrentTab] = useState('articles');
   const [isWindows] = useState(getIsWindows());
 
-  useEffect(() => {
+  const update = () => {
     checkForUpdate().then((info: UpdateInfo) => {
       const dialog: Dialog = new Dialog({
         title: '有新版本',
@@ -78,6 +84,47 @@ const Home: React.FC = (props) => {
         onCancel: () => dialog.close(),
       });
     });
+  };
+
+  const checkTermsAgreed = () => new Promise<void>((resolve, reject) => {
+    const termsAgreed = storage.userInfo.getTermsAgreed()
+    if (termsAgreed) {
+      resolve();
+    } else {
+      new Dialog({
+        title: '用户协议',
+        content: <>
+          您必须先阅读并同意我们的<Link href="https://potatofield.cn/richtexteditor/terms#eula" target="_blank" underline="none">《使用协议》</Link>
+          和<Link href="https://potatofield.cn/richtexteditor/terms#privacy" target="_blank" underline="none">《隐私政策》</Link>才能使用本软件。
+        </>,
+        confirmText: '我已阅读并同意《使用协议》和《隐私政策》',
+        onConfirm: () => {
+          storage.userInfo.setTermsAgreed(true);
+          resolve();
+        },
+        onCancel: () => {
+          reject();
+        },
+      });
+    }
+  });
+
+  const sendUsageInfo = () => {
+    const version = ipcRenderer.sendSync('version');
+    const platform = ipcRenderer.sendSync('platform');
+    let identifier = storage.userInfo.getIdentifier();
+    if (!identifier) {
+      identifier = uuid();
+      storage.userInfo.setIdentifier(identifier);
+    }
+    axios.post(SEND_USAGE_INFO, { version, platform, identifier });
+  }
+
+  useEffect(() => {
+    checkTermsAgreed().then(() => {
+      update();
+      sendUsageInfo();
+    }).catch(() => ipcRenderer.send('exit'));
   }, []);
 
   return (

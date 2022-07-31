@@ -126,10 +126,20 @@ p:last-child {
 a {
   text-decoration: none;
   color: #2196f3;
+  display: inline-flex;
+}
+
+a::after {
+  content: '[↑]';
+  font-size: 80%;
 }
 
 strong {
   color: #2196f3;
+}
+
+em {
+  font-style: italic;
 }
 
 li {
@@ -315,6 +325,12 @@ a {
 /* 请在此自定义粗体的样式 */
 
 strong {
+  
+}
+
+/* 请在此自定义斜体的样式 */
+
+em {
   
 }
 

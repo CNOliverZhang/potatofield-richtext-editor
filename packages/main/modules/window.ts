@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { join } from 'path';
 import storage from '../../renderer/src/store';
 
@@ -91,6 +91,13 @@ export const createWindow = (props: CreateWindowProps) => {
   // 窗口最大化之后再取消最大化，尺寸会变，手动调整回正常尺寸
   window.on('unmaximize', () => {
     window.setSize(props.width || DEFAULT_WINDOW_WIDTH, props.height || DEFAULT_WINDOW_HEIGHT);
+  });
+  // 外部链接使用系统浏览器打开
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https:') || url.startsWith('http:')) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' }
   });
   return window;
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import path from 'path';
 import hljs from 'highlight.js';
 import juice from 'juice';
 import prettier from 'prettier';
