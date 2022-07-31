@@ -157,7 +157,7 @@ const Home: React.FC = (props) => {
             className={`tab ${currentTab === 'styles' ? 'active' : ''}`}
             onClick={() => setCurrentTab('styles')}
           >
-            <FontAwesomeIcon icon={StyleIcon} size="2x" className="tab-icon" />
+            <FontAwesomeIcon icon={StyleIcon} className="tab-icon" />
             样式
           </div>
           <div className="tabs-space" />
