@@ -50,7 +50,7 @@ const SelectableArticleList: React.FC<SelectableArticleListProps> = (props) => {
     <div className={`${classes.selectableArticleList} ${articleList?.length ? '' : 'empty'}`}>
       {articleList?.length ? (
         articleList
-          .sort((a, b) => Number(b.updateTime) - Number(a.updateTime))
+          .sort((a, b) => Number(new Date(b.updateTime)) - Number(new Date(a.updateTime)))
           .map((item) => (
             <div
               key={item.id}

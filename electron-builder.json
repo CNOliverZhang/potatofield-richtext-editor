@@ -34,7 +34,7 @@
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "首个正式发布版本。"
+    "releaseNotes": "修复了已保存的文章无法按时间排序的问题。"
   },
   "afterSign": "scripts/notarize.js",
   "publish": [
