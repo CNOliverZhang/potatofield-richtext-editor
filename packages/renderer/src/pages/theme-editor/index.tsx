@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid';
 import { Button, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan as DeleteIcon } from '@fortawesome/free-solid-svg-icons';
+import CodeMirror from '@uiw/react-codemirror';
+import { css } from '@codemirror/lang-css';
 
 import AppWrappper from '@/components/app-wrappper';
 import RichTextRenderer from '@/components/rich-text-renderer';
@@ -30,6 +32,10 @@ const Editor: React.FC = (props) => {
   const idRef = useRef(id);
 
   const themeForm = useForm<Theme>();
+
+  const codeChange = (code: string) => {
+    themeForm.setValue('styleSheet', code, { shouldDirty: true });
+  };
 
   const saveAsNew = () => {
     const newId = uuid();
@@ -123,19 +129,16 @@ const Editor: React.FC = (props) => {
           />
           <Controller
             name="styleSheet"
-            defaultValue=""
             control={themeForm.control}
-            render={({ field }) => (
-              <TextField
-                label="CSS"
-                placeholder="请输入 CSS 样式表单"
-                size="small"
-                className="editor-text-area"
-                InputProps={{ inputComponent: 'textarea' }}
-                {...field}
-              />
-            )}
+            render={() => <></>}
           />
+          <div className="editor-code-input">
+            <CodeMirror
+              value={themeForm.watch('styleSheet')}
+              extensions={[css()]}
+              onChange={codeChange}
+            />
+          </div>
         </div>
         <div className="preview">
           <div className={`preview-controller ${isWindows ? 'app-wrapper-padding' : ''}`}>

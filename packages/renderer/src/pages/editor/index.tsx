@@ -2,17 +2,26 @@ import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Vditor from 'vditor';
 import html2canvas from 'html2canvas';
+import mdToPdf from 'md-to-pdf';
 import { clipboard } from 'electron';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
-import { Button, TextField, Typography, useTheme } from '@mui/material';
+import { Button, ListItemIcon, MenuItem, MenuList, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan as DeleteIcon, faCopy as CopyIcon } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrashCan as DeleteIcon,
+  faCopy as CopyIcon,
+  faFilePdf as PdfIcon,
+  faImage as ImageIcon,
+} from '@fortawesome/free-solid-svg-icons';
+import { faMarkdown as MarkdownIcon } from '@fortawesome/free-brands-svg-icons';
 
+import { themes, baseStyleSheet } from '@/consts/preset-themes';
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
 import RichTextRenderer from '@/components/rich-text-renderer';
+import DropdownPanel from '@/components/dropdown-panel';
 import Message from '@/imperative-components/message';
 import Dialog from '@/imperative-components/dialog';
 import Loading from '@/imperative-components/loading';
@@ -24,6 +33,7 @@ import Storage from '@/store';
 import GallerySvg from '@/assets/svgs/gallery.svg?raw';
 import GallerForm from './gallery-form';
 import styles from './styles';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const Editor: React.FC = (props) => {
   const storage = Storage();
@@ -125,8 +135,41 @@ const Editor: React.FC = (props) => {
         const event = new MouseEvent('click');
         a.dispatchEvent(event);
       })
-      .catch(() => new Message({ type: 'error', content: '保存失败' }))
+      .catch(() => new Message({ type: 'error', content: '导出失败' }))
       .finally(() => loading.close());
+  };
+
+  const saveAsPdf = () => {
+    const defaultThemeId = storage.themes.getDefaultThemeId();
+    const customThemeList = storage.themes.getThemeList();
+    const defaultTheme =
+      [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
+    const loading = new Loading();
+    mdToPdf({ content: articleForm.getValues().content }, {
+      css: `${baseStyleSheet}\n${defaultTheme.styleSheet}`,
+      highlight_style: storage.themes.getDefaultHljsTheme(),
+    })
+      .then((output) => {
+        const blob = new Blob([output.content]);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${articleForm.getValues().title || '无标题文件'}.pdf`;
+        const event = new MouseEvent('click');
+        a.dispatchEvent(event);
+      })
+      .catch((e) => {
+        new Message({ type: 'error', content: '导出失败' })
+        console.log(e)
+      })
+      .finally(() => loading.close());
+  };
+
+  const saveAsMarkdown = () => {
+    const a = document.createElement('a');
+    a.href = `data:text/plain;charset=utf-8,${encodeURIComponent(articleForm.getValues().content)}`;
+    a.download = `${articleForm.getValues().title || '无标题文件'}.md`;
+    const event = new MouseEvent('click');
+    a.dispatchEvent(event);
   };
 
   const insertGallery = () => {
@@ -349,15 +392,44 @@ const Editor: React.FC = (props) => {
               >
                 保存副本
               </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                className="action-button"
-                onClick={saveAsImage}
-                disabled={!articleForm.watch('content') || !articleForm.watch('title')}
+              <DropdownPanel
+                dropdownElement={(
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className="action-button"
+                  >
+                    导出为…
+                  </Button>
+                )}
               >
-                导出图片
-              </Button>
+                <MenuList>
+                  <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsImage}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={ImageIcon} />
+                    </ListItemIcon>
+                    <Typography variant="inherit">
+                      导出为图片
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={PdfIcon} />
+                    </ListItemIcon>
+                    <Typography variant="inherit">
+                      导出为 PDF
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsMarkdown}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={MarkdownIcon as IconProp} />
+                    </ListItemIcon>
+                    <Typography variant="inherit">
+                      导出为 Markdown 文件
+                    </Typography>
+                  </MenuItem>
+                </MenuList>
+              </DropdownPanel>
             </div>
           </div>
           <div className="preview-wrapper">

@@ -18,24 +18,13 @@ export default (theme: Theme) => ({
         marginBottom: theme.spacing(2),
       },
 
-      '&-text-area': {
+      '&-code-input': {
         width: '100%',
         height: 0,
         flexGrow: 1,
-
-        '& .MuiOutlinedInput-root': {
-          width: '100%',
-          height: '100%',
-          padding: 0,
-
-          '& textarea': {
-            width: '100%',
-            height: '100%',
-            overflow: 'auto',
-            padding: theme.spacing(2),
-            boxSizing: 'border-box',
-          },
-        },
+        borderRadius: theme.shape.borderRadius,
+        border: '1px rgba(0, 0, 0, 0.23) solid',
+        overflow: 'auto',
       },
 
       '&.app-wrapper-padding': {

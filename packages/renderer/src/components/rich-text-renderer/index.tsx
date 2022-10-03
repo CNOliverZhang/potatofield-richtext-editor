@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useTheme } from '@mui/material';
-import path from 'path';
 import hljs from 'highlight.js';
 import juice from 'juice';
 import Vditor from 'vditor';

@@ -34,7 +34,7 @@
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "修复了已保存的文章无法按时间排序的问题。"
+    "releaseNotes": "支持将文章导出为图片、PDF 文件和 Markdown 文件。\n支持使用 Code Mirror 编辑器编辑自定义样式。"
   },
   "afterSign": "scripts/notarize.js",
   "publish": [
