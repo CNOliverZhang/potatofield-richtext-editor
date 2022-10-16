@@ -9,6 +9,8 @@ import { useThrottle } from '@/utils/tool';
 import Storage from '@/store';
 import { themes, baseStyleSheet } from '@/consts/preset-themes';
 import styles from './styles';
+import axios from 'axios';
+import { GET_THEME_LIST } from '@/apis';
 
 interface RichTextRendererProps {
   elementId: string;
@@ -33,8 +35,10 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   const [styleSheet, setStyleSheet] = useState('');
   const [hljsTheme, setHljsTheme] = useState('');
   const [customThemeList, setCustomThemeList] = useState([...storage.themes.getThemeList()]);
+  const [onlineThemeList, setOnlineThemeList] = useState<Theme[]>([]);
 
   const customThemeListRef = useRef(customThemeList);
+  const onlineThemeListRef = useRef(onlineThemeList);
 
   const rerender = (markdown: string, stylesheet: string) => {
     Vditor.md2html(markdown).then((rawHtml) => {
@@ -59,7 +63,7 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   // 默认主题更新后使用新主题
   storage.themes.watchDefaultThemeId((defaultThemeId) => {
     const defaultTheme =
-      [...themes, ...customThemeListRef.current].find((item) => item.id === defaultThemeId) ||
+      [...themes, ...customThemeListRef.current, ...onlineThemeListRef.current].find((item) => item.id === defaultThemeId) ||
       themes[0];
     setStyleSheet(defaultTheme.styleSheet);
   });
@@ -70,6 +74,10 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   useEffect(() => {
     customThemeListRef.current = customThemeList;
   }, [customThemeList]);
+
+  useEffect(() => {
+    onlineThemeListRef.current = onlineThemeList;
+  }, [onlineThemeList]);
 
   // 传入的 markdown 变更或主题样式表变更时重新渲染
   useEffect(() => {
@@ -84,12 +92,21 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
     );
   }, [props.markdown, styleSheet, hljsTheme, props.styleSheet]);
 
+  // 获取在线主题或本地主题更新后重新设置默认主题
   useEffect(() => {
     const defaultThemeId = storage.themes.getDefaultThemeId();
     const defaultTheme =
-      [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
+      [...themes, ...customThemeList, ...onlineThemeList].find((item) => item.id === defaultThemeId) || themes[0];
     setStyleSheet(defaultTheme.styleSheet);
     setHljsTheme(storage.themes.getDefaultHljsTheme());
+  }, [customThemeList, onlineThemeList]);
+
+  useEffect(() => {
+    axios
+      .get(GET_THEME_LIST)
+      .then((res) => {
+        setOnlineThemeList(res.data.list);
+      })
   }, []);
 
   return (
