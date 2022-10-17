@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Vditor from 'vditor';
 import html2canvas from 'html2canvas';
-import mdToPdf from 'md-to-pdf';
 import { clipboard } from 'electron';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
@@ -139,30 +138,30 @@ const Editor: React.FC = (props) => {
       .finally(() => loading.close());
   };
 
-  const saveAsPdf = () => {
-    const defaultThemeId = storage.themes.getDefaultThemeId();
-    const customThemeList = storage.themes.getThemeList();
-    const defaultTheme =
-      [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
-    const loading = new Loading();
-    mdToPdf({ content: articleForm.getValues().content }, {
-      css: `${baseStyleSheet}\n${defaultTheme.styleSheet}`,
-      highlight_style: storage.themes.getDefaultHljsTheme(),
-    })
-      .then((output) => {
-        const blob = new Blob([output.content]);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `${articleForm.getValues().title || '无标题文件'}.pdf`;
-        const event = new MouseEvent('click');
-        a.dispatchEvent(event);
-      })
-      .catch((e) => {
-        new Message({ type: 'error', content: '导出失败' })
-        console.log(e)
-      })
-      .finally(() => loading.close());
-  };
+  // const saveAsPdf = () => {
+  //   const defaultThemeId = storage.themes.getDefaultThemeId();
+  //   const customThemeList = storage.themes.getThemeList();
+  //   const defaultTheme =
+  //     [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
+  //   const loading = new Loading();
+  //   mdToPdf({ content: articleForm.getValues().content }, {
+  //     css: `${baseStyleSheet}\n${defaultTheme.styleSheet}`,
+  //     highlight_style: storage.themes.getDefaultHljsTheme(),
+  //   })
+  //     .then((output) => {
+  //       const blob = new Blob([output.content]);
+  //       const a = document.createElement('a');
+  //       a.href = URL.createObjectURL(blob);
+  //       a.download = `${articleForm.getValues().title || '无标题文件'}.pdf`;
+  //       const event = new MouseEvent('click');
+  //       a.dispatchEvent(event);
+  //     })
+  //     .catch((e) => {
+  //       new Message({ type: 'error', content: '导出失败' })
+  //       console.log(e)
+  //     })
+  //     .finally(() => loading.close());
+  // };
 
   const saveAsMarkdown = () => {
     const a = document.createElement('a');
@@ -412,14 +411,14 @@ const Editor: React.FC = (props) => {
                       导出为图片
                     </Typography>
                   </MenuItem>
-                  <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
+                  {/* <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={PdfIcon} />
                     </ListItemIcon>
                     <Typography variant="inherit">
                       导出为 PDF
                     </Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsMarkdown}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={MarkdownIcon as IconProp} />
