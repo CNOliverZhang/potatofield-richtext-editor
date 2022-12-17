@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Vditor from 'vditor';
 import html2canvas from 'html2canvas';
-import { clipboard } from 'electron';
+import { clipboard, ipcRenderer } from 'electron';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
@@ -16,7 +16,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faMarkdown as MarkdownIcon } from '@fortawesome/free-brands-svg-icons';
 
-import { themes, baseStyleSheet } from '@/consts/preset-themes';
 import useThemeContext from '@/contexts/theme';
 import AppWrappper from '@/components/app-wrappper';
 import RichTextRenderer from '@/components/rich-text-renderer';
@@ -138,30 +137,37 @@ const Editor: React.FC = (props) => {
       .finally(() => loading.close());
   };
 
-  // const saveAsPdf = () => {
-  //   const defaultThemeId = storage.themes.getDefaultThemeId();
-  //   const customThemeList = storage.themes.getThemeList();
-  //   const defaultTheme =
-  //     [...themes, ...customThemeList].find((item) => item.id === defaultThemeId) || themes[0];
-  //   const loading = new Loading();
-  //   mdToPdf({ content: articleForm.getValues().content }, {
-  //     css: `${baseStyleSheet}\n${defaultTheme.styleSheet}`,
-  //     highlight_style: storage.themes.getDefaultHljsTheme(),
-  //   })
-  //     .then((output) => {
-  //       const blob = new Blob([output.content]);
-  //       const a = document.createElement('a');
-  //       a.href = URL.createObjectURL(blob);
-  //       a.download = `${articleForm.getValues().title || '无标题文件'}.pdf`;
-  //       const event = new MouseEvent('click');
-  //       a.dispatchEvent(event);
-  //     })
-  //     .catch((e) => {
-  //       new Message({ type: 'error', content: '导出失败' })
-  //       console.log(e)
-  //     })
-  //     .finally(() => loading.close());
-  // };
+  const replaceHexColor = (str: string) => {
+    return str.replace(/#([0-9A-Fa-f]{3}?|[0-9A-Fa-f]{6}?)/g, (hex) => {
+      let hexToParse = hex;
+      if (hexToParse.length === 4) {
+        const chars = hexToParse.split('');
+        hexToParse = `#${chars[1]}${chars[1]}${chars[2]}${chars[2]}${chars[3]}${chars[3]}`
+      }
+      const rgbValues = [];
+      for (let i = 1; i < 7; i++) {
+        rgbValues.push(parseInt(`0x${hexToParse[i]}${hexToParse[i + 1]}`));
+      }
+      return `rgb(${rgbValues.join(',')})`;
+    });
+  };
+
+  const saveAsPdf = () => {
+    const element = document.getElementById('rich-text-renderer') as HTMLElement;
+    ipcRenderer.send('save-as-pdf', { html: replaceHexColor(element.innerHTML) });
+    ipcRenderer.once('pdf-generated', (e, buffer) => {
+      const blob = new Blob([buffer]);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${articleForm.getValues().title || '无标题文件'}.pdf`;
+      const event = new MouseEvent('click');
+      a.dispatchEvent(event);
+      new Message({ type: 'success', content: '转换为 PDF 成功' });
+    });
+    ipcRenderer.once('pdf-generate-failed', () => {
+      new Message({ type: 'error', content: '转换为 PDF 失败' });
+    });
+  };
 
   const saveAsMarkdown = () => {
     const a = document.createElement('a');
@@ -411,14 +417,14 @@ const Editor: React.FC = (props) => {
                       导出为图片
                     </Typography>
                   </MenuItem>
-                  {/* <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
+                  <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={PdfIcon} />
                     </ListItemIcon>
                     <Typography variant="inherit">
                       导出为 PDF
                     </Typography>
-                  </MenuItem> */}
+                  </MenuItem>
                   <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsMarkdown}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={MarkdownIcon as IconProp} />

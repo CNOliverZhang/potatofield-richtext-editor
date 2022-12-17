@@ -34,7 +34,7 @@
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "修复了在线主题无法应用的问题。"
+    "releaseNotes": "支持将富文本内容导出为 PDF 文件。"
   },
   "afterSign": "scripts/notarize.js",
   "publish": [

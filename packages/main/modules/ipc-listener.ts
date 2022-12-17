@@ -2,6 +2,14 @@ import { App, BrowserWindow, dialog, ipcMain } from 'electron';
 import { checkForUpdate, installUpdate, startUpdate } from './update';
 import { changeUrlParams, CreateWindowProps, openWindow } from './window';
 
+interface SaveAsPdfParams {
+  html: string;
+  pageSize?: {
+    width: number;
+    height: number;
+  };
+}
+
 export const initIpcListeners = (app: App) => {
   ipcMain.on('platform', (event) => {
     event.returnValue = process.platform;
@@ -75,4 +83,31 @@ export const initIpcListeners = (app: App) => {
   ipcMain.on('version', (event) => {
     event.returnValue = app.getVersion();
   });
+
+  ipcMain.on('save-as-pdf', (event, args: SaveAsPdfParams) => {
+    const win = new BrowserWindow({
+      webPreferences: {
+        nodeIntegration: true,
+        webSecurity: false,
+        contextIsolation: false,
+        devTools: true,
+      },
+      show: false,
+      width: args.pageSize?.width || 600,
+      height: args.pageSize?.height || 800,
+      fullscreenable: false,
+      minimizable: false
+    });
+    win.loadURL(`data:text/html;charset=utf-8,${encodeURI(args.html)}`);
+    win.webContents.on('did-finish-load', () => {
+      win.webContents.printToPDF({
+        pageSize: args.pageSize,
+        printBackground: true,
+      }).then((value) => {
+        event.sender.send('pdf-generated', value);
+      }).catch(() => {
+        event.sender.send('pdf-generate-failed');
+      }).finally(() => win.destroy());
+    });
+  })
 };
