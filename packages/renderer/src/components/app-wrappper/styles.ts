@@ -9,6 +9,7 @@ export default (theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.palette.background.paper,
+    overflow: 'hidden',
 
     '& .app-bar': {
       width: '100%',

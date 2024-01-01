@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useForm, Controller } from 'react-hook-form';
-import { Typography, useTheme, TextField, MenuItem, Button } from '@mui/material';
+import {
+  Typography,
+  useTheme,
+  TextField,
+  MenuItem,
+  Button,
+  FormControlLabel,
+  Switch,
+  Slider,
+} from '@mui/material';
 
 import Upload from '@/utils/upload';
 import Storage from '@/store';
@@ -12,6 +21,10 @@ const UploadSettings: React.FC = (props) => {
   const theme = useTheme();
   const classes = createUseStyles(styles)({ theme });
   const form = useForm<Record<string, string>>();
+  const [compress, setCompress] = useState(storage.settings.getUploadCompress() || false);
+  const [compressQuality, setCompressQuality] = useState(
+    storage.settings.getUploadCompressQuality() || 10,
+  );
   const [uploadTarget, setUploadTarget] = useState(
     storage.settings.getUploadTarget() || Object.keys(Upload)[0],
   );
@@ -28,6 +41,14 @@ const UploadSettings: React.FC = (props) => {
       form.reset(config);
     }
   }, [uploadTarget]);
+
+  useEffect(() => {
+    storage.settings.setUploadCompress(compress);
+  }, [compress]);
+
+  useEffect(() => {
+    storage.settings.setUploadCompressQuality(compressQuality);
+  }, [compressQuality]);
 
   return (
     <div className={classes.container}>
@@ -71,6 +92,28 @@ const UploadSettings: React.FC = (props) => {
             )}
           />
         ))}
+        <Typography variant="h6" gutterBottom>
+          图片压缩
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch checked={compress} onChange={(event) => setCompress(event.target.checked)} />
+          }
+          label="开启压缩"
+        />
+        <div className="slider">
+          <Typography>压缩质量</Typography>
+          <div className="slider-inner">
+            <Slider
+              valueLabelDisplay="auto"
+              min={10}
+              max={100}
+              disabled={!compress}
+              value={compressQuality}
+              onChange={(event, value) => setCompressQuality(value as number)}
+            />
+          </div>
+        </div>
         <Button
           fullWidth
           variant="contained"

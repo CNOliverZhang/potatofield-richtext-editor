@@ -1,7 +1,7 @@
 {
   "appId": "cn.potatofield.richtexteditor",
   "productName": "洋芋田富文本编辑器",
-  "copyright": "Copyright © 2022 ${author}",
+  "copyright": "Copyright © 2024 ${author}",
   "asar": true,
   "directories": {
     "output": "release/${version}",
@@ -34,7 +34,7 @@
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "支持将富文本内容导出为 PDF 文件。"
+    "releaseNotes": "修复了网络环境不佳时编辑器加载失败的问题。\n修复了文章长度超过输入框大小时页面滚动显示效果异常的问题。\n上传图片时支持压缩后上传，并支持自定义压缩质量。"
   },
   "afterSign": "scripts/notarize.js",
   "publish": [

@@ -2,13 +2,12 @@
   "name": "potatofield-richtext-editor",
   "productName": "洋芋田富文本编辑器",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "一款支持将多媒体内容和样式便捷同步到社交媒体公众平台的富文本编辑器。",
   "author": "张志毅",
   "license": "MIT",
   "main": "dist/main/index.cjs",
   "scripts": {
-    "postinstall": "patch-package",
     "dev": "node scripts/watch.mjs",
     "build": "tsc --noEmit -p packages/renderer/tsconfig.json && node scripts/build.mjs && electron-builder"
   },
@@ -43,8 +42,9 @@
     "react-jss": "^10.9.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "sharp": "^0.33.1",
     "uuid": "^8.3.2",
-    "vditor": "^3.8.13"
+    "vditor": "^3.9.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",

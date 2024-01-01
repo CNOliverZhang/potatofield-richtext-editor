@@ -1,6 +1,7 @@
 import React, { ChangeEvent, DragEventHandler, useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { UseFormReturn } from 'react-hook-form';
+import fs from 'fs';
 import { Button, TextField, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage as ImageIcon } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +10,7 @@ import Upload from '@/utils/upload';
 import Storage from '@/store';
 import Loading from '@/imperative-components/loading';
 import Dialog from '@/imperative-components/dialog';
+import { compressImage } from '@/utils/compress';
 import styles from './styles';
 
 interface GalleryFormProps {
@@ -45,11 +47,15 @@ const GalleryForm: React.FC<GalleryFormProps> = (props: GalleryFormProps) => {
   };
 
   const uploadFile = async (file: File) => {
+    let filepath = file.path;
     if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
+      if (storage.settings.getUploadCompress()) {
+        filepath = await compressImage(filepath, storage.settings.getUploadCompressQuality());
+      }
       const uploadFunction = Upload[storage.settings.getUploadTarget()].upload;
       const loading = new Loading();
       try {
-        const imgUrl = await uploadFunction(file);
+        const imgUrl = await uploadFunction(filepath);
         addUrl(imgUrl);
       } catch (err) {
         new Dialog({
@@ -57,6 +63,10 @@ const GalleryForm: React.FC<GalleryFormProps> = (props: GalleryFormProps) => {
           content: (err as Error).message,
           showCancel: false,
         });
+      } finally {
+        if (filepath !== file.path) {
+          fs.rmSync(filepath);
+        }
       }
       loading.close();
     } else {

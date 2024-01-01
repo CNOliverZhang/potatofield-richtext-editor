@@ -2,11 +2,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Vditor from 'vditor';
 import html2canvas from 'html2canvas';
+import fs from 'fs';
 import { clipboard, ipcRenderer } from 'electron';
 import { createUseStyles } from 'react-jss';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
-import { Button, ListItemIcon, MenuItem, MenuList, TextField, Typography, useTheme } from '@mui/material';
+import {
+  Button,
+  ListItemIcon,
+  MenuItem,
+  MenuList,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrashCan as DeleteIcon,
@@ -29,9 +38,10 @@ import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
 import Storage from '@/store';
 import GallerySvg from '@/assets/svgs/gallery.svg?raw';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { compressImage } from '@/utils/compress';
 import GallerForm from './gallery-form';
 import styles from './styles';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const Editor: React.FC = (props) => {
   const storage = Storage();
@@ -52,11 +62,15 @@ const Editor: React.FC = (props) => {
   const galleryForm = useForm<Gallery>();
 
   const uploadHandler = async (files: File[]) => {
+    let filepath = files[0].path;
+    if (storage.settings.getUploadCompress()) {
+      filepath = await compressImage(filepath, storage.settings.getUploadCompressQuality());
+    }
     const uploadFunction = Upload[storage.settings.getUploadTarget()].upload;
     if (editorRef.current) {
       const loading = new Loading();
       try {
-        const url = await uploadFunction(files[0]);
+        const url = await uploadFunction(filepath);
         editorRef.current.insertValue(`![图片](${url})`);
       } catch (err) {
         new Dialog({
@@ -64,6 +78,10 @@ const Editor: React.FC = (props) => {
           content: (err as Error).message,
           showCancel: false,
         });
+      } finally {
+        if (filepath !== files[0].path) {
+          fs.rmSync(filepath);
+        }
       }
       loading.close();
     }
@@ -142,11 +160,11 @@ const Editor: React.FC = (props) => {
       let hexToParse = hex;
       if (hexToParse.length === 4) {
         const chars = hexToParse.split('');
-        hexToParse = `#${chars[1]}${chars[1]}${chars[2]}${chars[2]}${chars[3]}${chars[3]}`
+        hexToParse = `#${chars[1]}${chars[1]}${chars[2]}${chars[2]}${chars[3]}${chars[3]}`;
       }
       const rgbValues = [];
-      for (let i = 1; i < 7; i++) {
-        rgbValues.push(parseInt(`0x${hexToParse[i]}${hexToParse[i + 1]}`));
+      for (let i = 1; i < 7; i += 1) {
+        rgbValues.push(parseInt(`0x${hexToParse[i]}${hexToParse[i + 1]}`, 10));
       }
       return `rgb(${rgbValues.join(',')})`;
     });
@@ -264,6 +282,7 @@ const Editor: React.FC = (props) => {
           list: { dark: 'Dark', light: 'Light', wechat: 'WeChat' },
         },
       },
+      height: 0,
       toolbar: [
         'edit-mode',
         'undo',
@@ -398,40 +417,30 @@ const Editor: React.FC = (props) => {
                 保存副本
               </Button>
               <DropdownPanel
-                dropdownElement={(
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    className="action-button"
-                  >
+                dropdownElement={
+                  <Button color="primary" variant="contained" className="action-button">
                     导出为…
                   </Button>
-                )}
+                }
               >
                 <MenuList>
                   <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsImage}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={ImageIcon} />
                     </ListItemIcon>
-                    <Typography variant="inherit">
-                      导出为图片
-                    </Typography>
+                    <Typography variant="inherit">导出为图片</Typography>
                   </MenuItem>
                   <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsPdf}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={PdfIcon} />
                     </ListItemIcon>
-                    <Typography variant="inherit">
-                      导出为 PDF
-                    </Typography>
+                    <Typography variant="inherit">导出为 PDF</Typography>
                   </MenuItem>
                   <MenuItem disabled={!articleForm.watch('content')} onClick={saveAsMarkdown}>
                     <ListItemIcon>
                       <FontAwesomeIcon icon={MarkdownIcon as IconProp} />
                     </ListItemIcon>
-                    <Typography variant="inherit">
-                      导出为 Markdown 文件
-                    </Typography>
+                    <Typography variant="inherit">导出为 Markdown 文件</Typography>
                   </MenuItem>
                 </MenuList>
               </DropdownPanel>

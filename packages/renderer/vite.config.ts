@@ -88,7 +88,7 @@ export default defineConfig({
     resolveElectron({
       'electron-store': 'const Store = require("electron-store"); export default Store;',
       'cos-nodejs-sdk-v5': 'const Cos = require("cos-nodejs-sdk-v5"); export default Cos;',
-      'md-to-pdf': 'const mdToPdf = require("md-to-pdf"); export default mdToPdf;',
+      sharp: 'const Sharp = require("sharp"); export default Sharp;',
     }),
   ],
   base: './',

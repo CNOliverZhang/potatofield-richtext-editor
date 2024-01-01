@@ -46,6 +46,34 @@ const settings = (store: Store) => {
     });
   };
 
+  const setUploadCompress = (compress: boolean) => {
+    store.set('uploadCompress.compress', compress);
+  };
+
+  const getUploadCompress = () => {
+    return store.get('uploadCompress.compress') as boolean;
+  };
+
+  const watchUploadCompress = (callback: (config: boolean, oldConfig: boolean) => void) => {
+    store.onDidChange('uploadCompress.compress', (newValue, oldValue) => {
+      callback(newValue as boolean, oldValue as boolean);
+    });
+  };
+
+  const setUploadCompressQuality = (compressQuality: number) => {
+    store.set('uploadCompress.quality', compressQuality);
+  };
+
+  const getUploadCompressQuality = () => {
+    return store.get('uploadCompress.quality') as number;
+  };
+
+  const watchUploadCompressQuality = (callback: (config: boolean, oldConfig: boolean) => void) => {
+    store.onDidChange('uploadCompress.quality', (newValue, oldValue) => {
+      callback(newValue as boolean, oldValue as boolean);
+    });
+  };
+
   return {
     setDarkMode,
     getDarkMode,
@@ -56,6 +84,12 @@ const settings = (store: Store) => {
     setUploadConfig,
     getUploadConfig,
     watchUploadConfig,
+    setUploadCompress,
+    getUploadCompress,
+    watchUploadCompress,
+    setUploadCompressQuality,
+    getUploadCompressQuality,
+    watchUploadCompressQuality,
   };
 };
 

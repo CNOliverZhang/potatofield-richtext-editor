@@ -12,19 +12,28 @@ interface UploadTarget {
   name: string;
   tip?: string;
   fields: string[];
-  upload: (file: File) => Promise<string>;
+  upload: (filepath: string) => Promise<string>;
 }
 
 const tucang = {
   name: '图仓',
   tip: '使用图仓上传的图片可能无法被同步到微信公众号后台',
   fields: ['token'],
-  upload: async (file: File) => {
+  upload: async (filepath: string) => {
     const config = storage.settings.getUploadConfig('tucang');
     if (!config?.token) {
       return Promise.reject(
         new Error('您尚未配置图仓 token，请您按照指引在设置页面进行操作，方可使用图仓上传。'),
       );
+    }
+    let file: File;
+    try {
+      file = new File(
+        [fs.readFileSync(filepath).buffer],
+        `${uuid()}.${String(filepath.split('.').pop())}`,
+      );
+    } catch {
+      return Promise.reject(new Error('读取文件失败。'));
     }
     const formData = new FormData();
     formData.append('token', config.token);
@@ -44,7 +53,7 @@ const tucang = {
 const tCloud = {
   name: '腾讯云 COS',
   fields: ['SecretId', 'SecretKey', 'Bucket', 'Region'],
-  upload: async (file: File) => {
+  upload: async (filepath: string) => {
     return new Promise((resolve, reject) => {
       const config = storage.settings.getUploadConfig('tCloud');
       const { Bucket, Region, SecretId, SecretKey } = config || {};
@@ -56,14 +65,14 @@ const tCloud = {
         );
       }
       try {
-        const extension = file.path.split('.').pop();
+        const extension = filepath.split('.').pop();
         const cos = new Cos({ SecretId, SecretKey });
         cos.putObject(
           {
             Bucket,
             Region,
             Key: `${uuid()}.${extension}`,
-            Body: fs.createReadStream(file.path),
+            Body: fs.createReadStream(filepath),
           },
           (err, data) => {
             if (!err) {
