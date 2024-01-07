@@ -9,6 +9,7 @@ interface DropdownPanelProps {
   buttonVariant?: 'contained' | 'outlined' | 'text';
   dropdownElement?: ReactElement;
   buttonClassName?: string;
+  children?: React.ReactElement;
 }
 
 const dropdownPanel: React.FC<DropdownPanelProps> = (props) => {

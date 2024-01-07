@@ -97,7 +97,7 @@ export const createWindow = (props: CreateWindowProps) => {
     if (url.startsWith('https:') || url.startsWith('http:')) {
       shell.openExternal(url);
     }
-    return { action: 'deny' }
+    return { action: 'deny' };
   });
   return window;
 };

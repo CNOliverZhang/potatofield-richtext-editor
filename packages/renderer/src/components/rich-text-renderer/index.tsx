@@ -8,9 +8,9 @@ import Vditor from 'vditor';
 import { useThrottle } from '@/utils/tool';
 import Storage from '@/store';
 import { themes, baseStyleSheet } from '@/consts/preset-themes';
-import styles from './styles';
 import axios from 'axios';
 import { GET_THEME_LIST } from '@/apis';
+import styles from './styles';
 
 interface RichTextRendererProps {
   elementId: string;
@@ -41,7 +41,7 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   const onlineThemeListRef = useRef(onlineThemeList);
 
   const rerender = (markdown: string, stylesheet: string) => {
-    Vditor.md2html(markdown).then((rawHtml) => {
+    Vditor.md2html(markdown, { mode: 'light' }).then((rawHtml) => {
       const div = document.createElement('div');
       div.innerHTML = rawHtml;
       div.querySelectorAll('pre code').forEach((el) => {
@@ -63,8 +63,9 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   // 默认主题更新后使用新主题
   storage.themes.watchDefaultThemeId((defaultThemeId) => {
     const defaultTheme =
-      [...themes, ...customThemeListRef.current, ...onlineThemeListRef.current].find((item) => item.id === defaultThemeId) ||
-      themes[0];
+      [...themes, ...customThemeListRef.current, ...onlineThemeListRef.current].find(
+        (item) => item.id === defaultThemeId,
+      ) || themes[0];
     setStyleSheet(defaultTheme.styleSheet);
   });
 
@@ -96,17 +97,17 @@ const Editor: React.FC<RichTextRendererProps> = (props) => {
   useEffect(() => {
     const defaultThemeId = storage.themes.getDefaultThemeId();
     const defaultTheme =
-      [...themes, ...customThemeList, ...onlineThemeList].find((item) => item.id === defaultThemeId) || themes[0];
+      [...themes, ...customThemeList, ...onlineThemeList].find(
+        (item) => item.id === defaultThemeId,
+      ) || themes[0];
     setStyleSheet(defaultTheme.styleSheet);
     setHljsTheme(storage.themes.getDefaultHljsTheme());
   }, [customThemeList, onlineThemeList]);
 
   useEffect(() => {
-    axios
-      .get(GET_THEME_LIST)
-      .then((res) => {
-        setOnlineThemeList(res.data.list);
-      })
+    axios.get(GET_THEME_LIST).then((res) => {
+      setOnlineThemeList(res.data.list);
+    });
   }, []);
 
   return (

@@ -17,6 +17,7 @@ interface AppWrapperProps {
   title?: string;
   noHeight?: boolean;
   disableResize?: boolean;
+  children?: React.ReactElement;
 }
 
 const App: React.FC<AppWrapperProps> = (props) => {

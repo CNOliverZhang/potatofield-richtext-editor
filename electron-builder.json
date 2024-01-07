@@ -3,6 +3,7 @@
   "productName": "洋芋田富文本编辑器",
   "copyright": "Copyright © 2024 ${author}",
   "asar": true,
+  "asarUnpack": ["**/node_modules/sharp/**/*", "**/node_modules/@img/**/*"],
   "directories": {
     "output": "release/${version}",
     "buildResources": "resources"
@@ -26,7 +27,10 @@
   },
   "mac": {
     "identity": "Shenzhen Potato Field Technology Consulting Co., Ltd (T657YWLL39)",
-    "target": ["default"],
+    "target": [{
+      "target": "default",
+      "arch": ["universal"]
+    }],
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "linux": {

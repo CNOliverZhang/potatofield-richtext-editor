@@ -16,6 +16,7 @@ interface UploadProps {
   onChange?: (event: UploadChangeEvent) => void;
   render?: React.FC<RenderProps>;
   keepChosenFiles?: boolean;
+  children?: React.ReactElement;
 }
 
 const upload: React.FC<UploadProps> = (props) => {
