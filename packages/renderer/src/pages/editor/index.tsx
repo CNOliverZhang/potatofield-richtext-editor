@@ -36,6 +36,7 @@ import Upload from '@/utils/upload';
 import { closeWindow } from '@/utils/window';
 import { changeUrlParams } from '@/utils/url';
 import { isWindows as getIsWindows } from '@/utils/platform';
+import { blockquoteToSection } from '@/utils/html';
 import Storage from '@/store';
 import GallerySvg from '@/assets/svgs/gallery.svg?raw';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
@@ -133,7 +134,9 @@ const Editor: React.FC = (props) => {
 
   const copy = () => {
     const element = document.getElementById('rich-text-renderer') as HTMLElement;
-    clipboard.writeHTML(element.innerHTML);
+    // 微信公众号的 blockquote 元素不支持超过 300 字，
+    // 复制前把 blockquote 换成携带同样内联样式的 section
+    clipboard.writeHTML(blockquoteToSection(element.innerHTML));
     new Message({ type: 'success', content: '复制成功' });
   };
 
