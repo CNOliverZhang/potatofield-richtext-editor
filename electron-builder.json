@@ -1,7 +1,7 @@
 {
   "appId": "cn.potatofield.richtexteditor",
   "productName": "洋芋田富文本编辑器",
-  "copyright": "Copyright © 2024 ${author}",
+  "copyright": "Copyright © 2026 ${author}",
   "asar": true,
   "asarUnpack": ["**/node_modules/sharp/**/*", "**/node_modules/@img/**/*"],
   "directories": {
@@ -38,7 +38,7 @@
     "artifactName": "potatofield-richtexteditor-${version}.${ext}"
   },
   "releaseInfo": {
-    "releaseNotes": "修复了网络环境不佳时编辑器加载失败的问题。\n修复了文章长度超过输入框大小时页面滚动显示效果异常的问题。\n上传图片时支持压缩后上传，并支持自定义压缩质量。"
+    "releaseNotes": "修复了复制富文本到微信公众号后代码块排版错乱的问题。\n修复了代码块中的换行在公众号中丢失的问题。\n长代码行不再被自动折行，超出宽度时可左右滑动查看完整代码。"
   },
   "afterSign": "scripts/notarize.js",
   "publish": [
